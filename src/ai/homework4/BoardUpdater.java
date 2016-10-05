@@ -47,6 +47,14 @@ public class BoardUpdater {
     
     
     public boolean checkIfWinner(BoardStateSpace board){
+        
+        //REDO THIS ! I THOUGHT WAS 4 IN A ROW SHOULD BE 3 IN A ROW!
+        for(int row = 0; row < 4; row++){
+            for(int col = 0; col < 4; col++){
+
+            }
+        }
+        
         //Note, There is 10 Possible Ways to Win...
         if(     board.getTile(0, 0).getTileMark().equals("X") && 
                 board.getTile(0, 1).getTileMark().equals("X") &&

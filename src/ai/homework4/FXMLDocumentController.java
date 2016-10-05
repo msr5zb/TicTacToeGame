@@ -43,6 +43,7 @@ public class FXMLDocumentController implements Initializable {
     boolean playerTurn = true;
     String playerMark = "X";
     String aiMark = "O";
+    String difficulty;
     
     public BoardStateSpace getBoardStateSpace(){return this.workingBoardStateSpace;}
     public void setBoardStateSpace(BoardStateSpace newBoardStateSpace){this.workingBoardStateSpace = newBoardStateSpace;}
@@ -60,9 +61,14 @@ public class FXMLDocumentController implements Initializable {
     public String getAiMark(){return this.aiMark;}
     public void setAiMark(String value){this.aiMark = value;}    
     
+    public void setDifficulty(String value){this.difficulty = value;}
+    public String getDifficulty(){return this.difficulty;}
     
     @Override
-    public void initialize(URL url, ResourceBundle rb) {        
+    public void initialize(URL url, ResourceBundle rb) {      
+        setPlayerMark("X");
+        setAiMark("O");
+        setDifficulty("Easy");
         initializeNewGame(getBoard(), getBoardStateSpace());               
     }    
 
@@ -114,7 +120,8 @@ public class FXMLDocumentController implements Initializable {
                                 }
                                 else{
                                     //Do Opponent's Move
-                                    
+                                    setPlayerTurn(false);
+                                    aiTurn();
                                 }
 
                            }
@@ -135,6 +142,15 @@ public class FXMLDocumentController implements Initializable {
     }
          
 
-    
+    public void aiTurn(){
+        
+        AIProcess newAI = new AIProcess();
+        
+        switch(getDifficulty()){
+            case "Beginner": newAI.doBeginnerMove(); break;
+            case "Advanced": newAI.doAdvancedMove(); break;
+            case "Master": newAI.doMasterMove(); break;
+        }
+    }
     
 }
