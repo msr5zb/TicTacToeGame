@@ -17,14 +17,5 @@ public class Tile {
     public Tile(String mark){this.tileMark = mark;}
     public void setTileMark(String mark){this.tileMark = mark;}  
     public String getTileMark(){return this.tileMark;}
-      
-    
-    
-    
-    
-    
-    
-    
-    
     
 }
