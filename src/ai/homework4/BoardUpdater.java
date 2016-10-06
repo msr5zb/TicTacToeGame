@@ -47,160 +47,126 @@ public class BoardUpdater {
     
     
     public boolean checkIfWinner(BoardStateSpace board){
-        
-        //REDO THIS ! I THOUGHT WAS 4 IN A ROW SHOULD BE 3 IN A ROW!
+     
+        //Check for three in a row
         for(int row = 0; row < 4; row++){
             for(int col = 0; col < 4; col++){
 
+
+                //Placements to Check
+
+                //2 Left
+                if(col-2>=0){
+                    if(!board.getTile(row,col).getTileMark().equals("empty") &&
+                       board.getTile(row,col).getTileMark().equals(board.getTile(row,col-1).getTileMark()) && 
+                       board.getTile(row,col-1).getTileMark().equals(board.getTile(row,col-2).getTileMark())){
+                        return true;
+                    }
+                }
+                //2 Right
+                if(col+2<4){
+                    if(!board.getTile(row,col).getTileMark().equals("empty") &&
+                       board.getTile(row,col).getTileMark().equals(board.getTile(row,col+1).getTileMark()) &&
+                       board.getTile(row,col+1).getTileMark().equals(board.getTile(row,col+2).getTileMark())){
+                        return true;
+                    }
+                }
+
+                //1 Left and 1 Right
+                if(col-1>=0 && col+1<4){
+                    if(!board.getTile(row,col).getTileMark().equals("empty") &&
+                       board.getTile(row,col).getTileMark().equals(board.getTile(row,col-1).getTileMark())&&
+                       board.getTile(row,col-1).getTileMark().equals(board.getTile(row,col+1).getTileMark())){
+                        return true;
+                    }   
+                }
+
+                //2 Up
+                if(row-2>=0){
+                    if(!board.getTile(row,col).getTileMark().equals("empty") &&
+                       board.getTile(row,col).getTileMark().equals(board.getTile(row-1,col).getTileMark())&&
+                       board.getTile(row-1,col).getTileMark().equals(board.getTile(row-2,col).getTileMark())){
+                        return true;
+                    }
+                }
+
+                //2 Down
+                if(row+2<4){
+                    if(!board.getTile(row,col).getTileMark().equals("empty") &&
+                       board.getTile(row,col).getTileMark().equals(board.getTile(row+1,col).getTileMark())&&
+                       board.getTile(row+1,col).getTileMark().equals(board.getTile(row+2,col).getTileMark())){
+                        return true;
+                    }
+                }
+
+                //1 Up 1 Down
+                if(row-1>=0 && row+1<4){
+                    if(!board.getTile(row,col).getTileMark().equals("empty") &&
+                       board.getTile(row,col).getTileMark().equals(board.getTile(row-1,col).getTileMark())&&
+                       board.getTile(row-1,col).getTileMark().equals(board.getTile(row+1,col).getTileMark())){
+                        return true;
+                    }    
+                }
+
+                //2 Diagonal Up-Left
+                if(row-2>=0 && col-2>=0){
+                    if(!board.getTile(row,col).getTileMark().equals("empty") &&
+                       board.getTile(row,col).getTileMark().equals(board.getTile(row-1,col-1).getTileMark())&&
+                       board.getTile(row-1,col-1).getTileMark().equals(board.getTile(row-2,col-2).getTileMark())){
+                        return true;
+                    }    
+                }
+
+                //2 Diagonal Up-Right
+                if(row-2>=0 && col+2<4){
+                    if(!board.getTile(row,col).getTileMark().equals("empty") &&
+                       board.getTile(row,col).getTileMark().equals(board.getTile(row-1,col+1).getTileMark())&&
+                       board.getTile(row-1,col+1).getTileMark().equals(board.getTile(row-2,col+2).getTileMark())){
+                        return true;
+                    }
+                }
+
+                //2 Diagonal Down-Left
+                if(row+2<4 && col-2>=0){
+                    if(!board.getTile(row,col).getTileMark().equals("empty") &&
+                       board.getTile(row,col).getTileMark().equals(board.getTile(row+1,col-1).getTileMark())&&
+                       board.getTile(row+1,col-1).getTileMark().equals(board.getTile(row+2,col-2).getTileMark())){
+                        return true;
+                    }
+                }
+
+                //2 Diagonal Down-Right
+                if(row+2<4 && col+2<4){
+                    if(!board.getTile(row,col).getTileMark().equals("empty") &&
+                       board.getTile(row,col).getTileMark().equals(board.getTile(row+1,col+1).getTileMark())&&
+                       board.getTile(row+1,col+1).getTileMark().equals(board.getTile(row+2,col+2).getTileMark())){
+                        return true;
+                    }
+                }
+
+
+                //1 Diagonal Up-Left, 1 Diagonal Down-Right
+                if(row-1>=0 && row+1<4 && col-1>=0 && col+1<4){
+                    if(!board.getTile(row,col).getTileMark().equals("empty") &&
+                       board.getTile(row,col).getTileMark().equals(board.getTile(row-1,col-1).getTileMark())&&
+                       board.getTile(row-1,col-1).getTileMark().equals(board.getTile(row+1,col+1).getTileMark())){
+                        return true;
+                    }
+                }
+
+                //1 Diagonal Up-Right, 1 Diagonal Down-Left
+                if(row-1>=0 && row+1<4 && col-1>=0 && col+1<4){
+                    if(!board.getTile(row,col).getTileMark().equals("empty") &&
+                       board.getTile(row,col).getTileMark().equals(board.getTile(row-1,col+1).getTileMark())&&
+                       board.getTile(row-1,col+1).getTileMark().equals(board.getTile(row+1,col-1).getTileMark())){
+                        return true;
+                    }
+                }
+
             }
         }
-        
-        //Note, There is 10 Possible Ways to Win...
-        if(     board.getTile(0, 0).getTileMark().equals("X") && 
-                board.getTile(0, 1).getTileMark().equals("X") &&
-                board.getTile(0, 2).getTileMark().equals("X") &&
-                board.getTile(0, 3).getTileMark().equals("X")   ){
-                System.out.println("Winner is X!");
-                return true;
-        }
-        if(     board.getTile(1, 0).getTileMark().equals("X") && 
-                board.getTile(1, 1).getTileMark().equals("X") &&
-                board.getTile(1, 2).getTileMark().equals("X") &&
-                board.getTile(1, 3).getTileMark().equals("X")   ){
-                System.out.println("Winner is X!");
-                return true;
-        }  
-        if(     board.getTile(2, 0).getTileMark().equals("X") && 
-                board.getTile(2, 1).getTileMark().equals("X") &&
-                board.getTile(2, 2).getTileMark().equals("X") &&
-                board.getTile(2, 3).getTileMark().equals("X")   ){
-                System.out.println("Winner is X!");
-                return true;
-        }                 
-        if(     board.getTile(3, 0).getTileMark().equals("X") && 
-                board.getTile(3, 1).getTileMark().equals("X") &&
-                board.getTile(3, 2).getTileMark().equals("X") &&
-                board.getTile(3, 3).getTileMark().equals("X")   ){
-                System.out.println("Winner is X!");
-                return true;
-        }         
-        if(     board.getTile(0, 0).getTileMark().equals("X") && 
-                board.getTile(1, 0).getTileMark().equals("X") &&
-                board.getTile(2, 0).getTileMark().equals("X") &&
-                board.getTile(3, 0).getTileMark().equals("X")   ){
-                System.out.println("Winner is X!");
-                return true;
-        }    
-        if(     board.getTile(0, 1).getTileMark().equals("X") && 
-                board.getTile(1, 1).getTileMark().equals("X") &&
-                board.getTile(2, 1).getTileMark().equals("X") &&
-                board.getTile(3, 1).getTileMark().equals("X")   ){
-                System.out.println("Winner is X!");
-                return true;
-        } 
-        if(     board.getTile(0, 2).getTileMark().equals("X") && 
-                board.getTile(1, 2).getTileMark().equals("X") &&
-                board.getTile(2, 2).getTileMark().equals("X") &&
-                board.getTile(3, 2).getTileMark().equals("X")   ){
-                System.out.println("Winner is X!");
-                return true;
-        } 
-        if(     board.getTile(0, 3).getTileMark().equals("X") && 
-                board.getTile(1, 3).getTileMark().equals("X") &&
-                board.getTile(2, 3).getTileMark().equals("X") &&
-                board.getTile(3, 3).getTileMark().equals("X")   ){
-                System.out.println("Winner is X!");
-                return true;
-        } 
-        if(     board.getTile(0, 0).getTileMark().equals("X") && 
-                board.getTile(1, 1).getTileMark().equals("X") &&
-                board.getTile(2, 2).getTileMark().equals("X") &&
-                board.getTile(3, 3).getTileMark().equals("X")   ){
-                System.out.println("Winner is X!");
-                return true;
-        } 
-        if(     board.getTile(0, 3).getTileMark().equals("X") && 
-                board.getTile(1, 2).getTileMark().equals("X") &&
-                board.getTile(2, 1).getTileMark().equals("X") &&
-                board.getTile(3, 0).getTileMark().equals("X")   ){
-                System.out.println("Winner is X!");
-                return true;
-        }
-        
-        //Note, There is 10 Possible Ways to Win...
-        if(     board.getTile(0, 0).getTileMark().equals("O") && 
-                board.getTile(0, 1).getTileMark().equals("O") &&
-                board.getTile(0, 2).getTileMark().equals("O") &&
-                board.getTile(0, 3).getTileMark().equals("O")   ){
-                System.out.println("Winner is O!");
-                return true;
-        }
-        if(     board.getTile(1, 0).getTileMark().equals("O") && 
-                board.getTile(1, 1).getTileMark().equals("O") &&
-                board.getTile(1, 2).getTileMark().equals("O") &&
-                board.getTile(1, 3).getTileMark().equals("O")   ){
-                System.out.println("Winner is O!");
-                return true;
-        }  
-        if(     board.getTile(2, 0).getTileMark().equals("O") && 
-                board.getTile(2, 1).getTileMark().equals("O") &&
-                board.getTile(2, 2).getTileMark().equals("O") &&
-                board.getTile(2, 3).getTileMark().equals("O")   ){
-                System.out.println("Winner is O!");
-                return true;
-        }                 
-        if(     board.getTile(3, 0).getTileMark().equals("O") && 
-                board.getTile(3, 1).getTileMark().equals("O") &&
-                board.getTile(3, 2).getTileMark().equals("O") &&
-                board.getTile(3, 3).getTileMark().equals("O")   ){
-                System.out.println("Winner is O!");
-                return true;
-        }         
-        if(     board.getTile(0, 0).getTileMark().equals("O") && 
-                board.getTile(1, 0).getTileMark().equals("O") &&
-                board.getTile(2, 0).getTileMark().equals("O") &&
-                board.getTile(3, 0).getTileMark().equals("O")   ){
-                System.out.println("Winner is O!");
-                return true;
-        }    
-        if(     board.getTile(0, 1).getTileMark().equals("O") && 
-                board.getTile(1, 1).getTileMark().equals("O") &&
-                board.getTile(2, 1).getTileMark().equals("O") &&
-                board.getTile(3, 1).getTileMark().equals("O")   ){
-                System.out.println("Winner is O!");
-                return true;
-        } 
-        if(     board.getTile(0, 2).getTileMark().equals("O") && 
-                board.getTile(1, 2).getTileMark().equals("O") &&
-                board.getTile(2, 2).getTileMark().equals("O") &&
-                board.getTile(3, 2).getTileMark().equals("O")   ){
-                System.out.println("Winner is O!");
-                return true;
-        } 
-        if(     board.getTile(0, 3).getTileMark().equals("O") && 
-                board.getTile(1, 3).getTileMark().equals("O") &&
-                board.getTile(2, 3).getTileMark().equals("O") &&
-                board.getTile(3, 3).getTileMark().equals("O")   ){
-                System.out.println("Winner is O!");
-                return true;
-        } 
-        if(     board.getTile(0, 0).getTileMark().equals("O") && 
-                board.getTile(1, 1).getTileMark().equals("O") &&
-                board.getTile(2, 2).getTileMark().equals("O") &&
-                board.getTile(3, 3).getTileMark().equals("O")   ){
-                System.out.println("Winner is O!");
-                return true;
-        } 
-        if(     board.getTile(0, 3).getTileMark().equals("O") && 
-                board.getTile(1, 2).getTileMark().equals("O") &&
-                board.getTile(2, 1).getTileMark().equals("O") &&
-                board.getTile(3, 0).getTileMark().equals("O")   ){
-                System.out.println("Winner is O!");
-                return true;
-        }
-        
-        
         return false;
+        
     }
     
     

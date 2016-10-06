@@ -120,7 +120,7 @@ public class FXMLDocumentController implements Initializable {
                                 }
                                 else{
                                     //Do Opponent's Move
-                                    setPlayerTurn(false);
+                                    //setPlayerTurn(false);
                                     aiTurn();
                                 }
 
