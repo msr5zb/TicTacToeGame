@@ -13,6 +13,7 @@ import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.input.MouseEvent;
@@ -44,6 +45,8 @@ public class FXMLDocumentController implements Initializable {
     String playerMark = "X";
     String aiMark = "O";
     String difficulty;
+    @FXML
+    private Button resetButton;
     
     public BoardStateSpace getBoardStateSpace(){return this.workingBoardStateSpace;}
     public void setBoardStateSpace(BoardStateSpace newBoardStateSpace){this.workingBoardStateSpace = newBoardStateSpace;}
@@ -115,8 +118,8 @@ public class FXMLDocumentController implements Initializable {
                                 if(getBoardUpdater().checkIfWinner(workingBoardStateSpace)){
                                     System.out.println("WINNER");
                                     //End Game - Clear Board
-                                    initializeNewGame(getBoard(), getBoardStateSpace());
-
+                                    //initializeNewGame(getBoard(), getBoardStateSpace());
+                                     setPlayerTurn(false);
                                 }
                                 else{
                                     //Do Opponent's Move
@@ -151,6 +154,12 @@ public class FXMLDocumentController implements Initializable {
             case "Advanced": newAI.doAdvancedMove(); break;
             case "Master": newAI.doMasterMove(); break;
         }
+    }
+
+    @FXML
+    private void resetButtonClick(MouseEvent event) {
+        initializeNewGame(getBoard(), getBoardStateSpace()); 
+        setPlayerTurn(true);
     }
     
 }
