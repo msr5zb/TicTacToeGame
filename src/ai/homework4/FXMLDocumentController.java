@@ -147,7 +147,7 @@ public class FXMLDocumentController implements Initializable {
         AIProcess newAI = new AIProcess();
         
         switch(getDifficulty()){
-            case "Beginner": newAI.doBeginnerMove(); break;
+            //case "Beginner": newAI.doBeginnerMove(); break;
             case "Advanced": newAI.doAdvancedMove(); break;
             case "Master": newAI.doMasterMove(); break;
         }

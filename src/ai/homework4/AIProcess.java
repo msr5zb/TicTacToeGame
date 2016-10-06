@@ -14,8 +14,10 @@ public class AIProcess {
     
     public AIProcess(){}
     
-    public void doBeginnerMove(){
+    public void doBeginnerMove(BoardStateSpace board){
         
+        
+
     }
     
     public void doAdvancedMove(){
