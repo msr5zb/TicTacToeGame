@@ -101,81 +101,12 @@ public class AIProcess {
 //    
    public void doAdvancedMove(GridPane gridBoard, BoardStateSpace workingStateSpace, String playerMark, int depth){
         System.out.println("AI's Move");
-        
-//        BoardUpdater checkWinner = new BoardUpdater();
-//        
-//        Tile foundTile;
-//        BoardStateSpace foundBoard;
-//        ImageView mark = new ImageView();
-//        
-//        
-//        if(playerMark.equals("X")){
-//            //Check
-//            Tile tileCheck1 = checkWinner.checkPlayer1PotentialWin(workingStateSpace);
-//            Tile tileCheck2 = checkWinner.checkPlayer2PotentialWin(workingStateSpace);
-//            foundBoard = miniMax(gridBoard, workingStateSpace, playerMark, depth);
-//            
-//            if (tileCheck1 != null){
-//                tileCheck1.setTileMark("X");
-//                foundTile = tileCheck1;
-//            }
-//            else if(tileCheck2 != null){
-//                tileCheck2.setTileMark("X");
-//                foundTile = tileCheck2;
-//            }
-//            else if(foundBoard != null){
-//                System.out.println("here?");
-//                workingStateSpace = foundBoard;
-//            }
-//            else{
-//                System.out.println("CATS GAME! LOL");
-//                foundTile = null;
-//            }
-//            mark.setImage(new Image("X.png"));
-//            mark.setStyle("-fx-background-color: whitesmoke; -fx-padding: 2;");
-//        
-//            workingStateSpace.setPlayer1Turn(false);
-//        }
-//        else{
-//            //Check
-//            Tile tileCheck1 = checkWinner.checkPlayer1PotentialWin(workingStateSpace);
-//            Tile tileCheck2 = checkWinner.checkPlayer2PotentialWin(workingStateSpace);
-//            foundBoard = miniMax(gridBoard, workingStateSpace, playerMark, depth);
-//            
-//            if (tileCheck1 != null){
-//                tileCheck1.setTileMark("O");
-//                foundTile = tileCheck1;
-//            }
-//            else if(tileCheck2 != null){
-//                tileCheck1.setTileMark("O");
-//                foundTile = tileCheck2;
-//            }
-//            else if(foundBoard != null){
-//                System.out.println("here?");
-//                workingStateSpace = foundBoard;
-//            }            
-//            else{
-//                System.out.println("CATS GAME! LOL");
-//                foundTile = null;
-//            }
-//            mark.setImage(new Image("O.png"));
-//            mark.setStyle("-fx-background-color: whitesmoke; -fx-padding: 2;");
-//            workingStateSpace.setPlayer1Turn(true);       
-//        }
-//   }
-//   
-//   
-//   
-//   
-   
-        
-        if(playerMark.equals("X")){
+        System.out.println("Mark is: " + playerMark);
+        if(playerMark.equals("O")){
             //Create Our Fringe
             List<BoardStateSpace> fringeCalculation = new ArrayList<BoardStateSpace>();
             List<BoardStateSpace> fringeGeneration = new ArrayList<BoardStateSpace>();
-            
-
-            
+  
             int nodeID = 0;
             int parentID = 0;
             int lookAhead = 0;
@@ -186,27 +117,36 @@ public class AIProcess {
             workingStateSpace.lookAhead = lookAhead;
             workingStateSpace.potentialValue = boardUpdater.countPlayer1PotentialWin(workingStateSpace);
             
+            BoardStateSpace workingChildrenStateSpace = new BoardStateSpace();
+            workingChildrenStateSpace.cloneBoard(workingStateSpace);
+            
              //Add First Node to Fringe
-            fringeCalculation.add(workingStateSpace);
-            fringeGeneration.add(workingStateSpace);           
+            fringeCalculation.add(workingChildrenStateSpace);
+            fringeGeneration.add(workingChildrenStateSpace);           
             
             //Look Ahead 2 Children's worth!
-            while(lookAhead <= 2){
-
+            while(!fringeGeneration.isEmpty()){
+                
+                
+                
                 //Work with Best H-Value
-                workingStateSpace = fringeGeneration.get(nodeID);
-                fringeGeneration.remove(nodeID);
-     
+                System.out.println("Size of Array is: " + fringeGeneration.size());
+                workingChildrenStateSpace = fringeGeneration.get(0);
+                System.out.println("Look Ahead Level is: " + workingChildrenStateSpace.lookAhead);
+                fringeGeneration.remove(0);
+                
                 
                 //Expand Node's Children  
-                if(lookAhead%2 == 0){
+                if(lookAhead%2 == 0 && workingChildrenStateSpace.lookAhead < 2){
           
-                    workingStateSpace.generateChildrenStateSpaces("X");
-                    List<BoardStateSpace> children = workingStateSpace.getChildren();
+                    workingChildrenStateSpace.generateChildrenStateSpaces("O");
+                    List<BoardStateSpace> children = new ArrayList<BoardStateSpace>();
+                    children = workingChildrenStateSpace.getChildren();
+                    System.out.println("Number of Children is: " + children.size());
                     for(int i = 0; i < children.size(); i++) {
-                        children.get(i).nodeID = ++nodeID;
-                        children.get(i).parentID = workingStateSpace.parentID;
-                        children.get(i).lookAhead = 1+lookAhead;
+                        children.get(i).nodeID = nodeID++;
+                        children.get(i).parentID = workingChildrenStateSpace.parentID;
+                        children.get(i).lookAhead = 1+workingChildrenStateSpace.lookAhead;
                         children.get(i).potentialValue = boardUpdater.countPlayer1PotentialWin(children.get(i));
                         fringeGeneration.add(children.get(i));
                         fringeCalculation.add(children.get(i));
@@ -214,22 +154,28 @@ public class AIProcess {
     
                 }
                 else{
-                    workingStateSpace.generateChildrenStateSpaces("O");
-                    List<BoardStateSpace> children = workingStateSpace.getChildren();
-                    for(int i = 0; i < children.size(); i++) {
-                        children.get(i).nodeID = ++nodeID;
-                        children.get(i).parentID = workingStateSpace.parentID;
-                        children.get(i).lookAhead = 1+lookAhead;
-                        children.get(i).potentialValue = boardUpdater.countPlayer2PotentialWin(children.get(i));
-                        fringeGeneration.add(children.get(i));
-                        fringeCalculation.add(children.get(i));
-                    }        
+                    if(workingChildrenStateSpace.lookAhead < 2){
+                        workingChildrenStateSpace.generateChildrenStateSpaces("X");
+                        List<BoardStateSpace> children = new ArrayList<BoardStateSpace>();
+                        children = workingChildrenStateSpace.getChildren();
+                        System.out.println("Number of Children is: " + children.size());
+                        for(int i = 0; i < children.size(); i++) {
+                            children.get(i).nodeID = nodeID++;
+                            children.get(i).parentID = workingChildrenStateSpace.parentID;
+                            children.get(i).lookAhead = 1+lookAhead;
+                            children.get(i).potentialValue = boardUpdater.countPlayer2PotentialWin(children.get(i));
+                            fringeGeneration.add(children.get(i));
+                            fringeCalculation.add(children.get(i));
+                        }    
+                    }
                 }
-           
+                
+                System.out.println("Size of Array After is: " + fringeGeneration.size());
+                
         }
         
         
-        workingStateSpace = calculateMiniMax(workingStateSpace, fringeCalculation);
+        workingStateSpace =  miniMax(fringeCalculation, playerMark, depth);
         
         
         }
@@ -237,7 +183,91 @@ public class AIProcess {
         
         
     }
+   
 
+    public BoardStateSpace miniMax(List<BoardStateSpace> fringe, String playerMark, int depth){
+        System.out.println("In the Min Max");
+        System.out.println("*****Number of Nodes to Check: " + fringe.size());
+        
+        BoardUpdater boardUpdater = new BoardUpdater();
+        int lookAheadCounter = depth;
+        while(lookAheadCounter != 0){
+            
+            //Get All Children from Fringe That are of Desired Level
+            List<BoardStateSpace> lookAheadChildren = new ArrayList<BoardStateSpace>();
+            for(int i = 0; i < fringe.size(); i++){
+                if(fringe.get(i).lookAhead == lookAheadCounter){
+                        lookAheadChildren.add(fringe.get(i));
+                        fringe.remove(i);
+                }
+             }
+
+        //While There is Still Children to Process at This Level
+        while(!lookAheadChildren.isEmpty()){
+            
+            
+             //Create Group of Children Node of Same Parent, Starting with First in Queue
+             List<BoardStateSpace> lookAheadChildrenGroup = new ArrayList<BoardStateSpace>();
+             lookAheadChildrenGroup.add(lookAheadChildren.get(0));
+             lookAheadChildren.remove(0);
+
+             //Find all Node with Same Parent and add them to Group.
+             for(int j = 0; j < lookAheadChildren.size(); j++){
+                     if(lookAheadChildrenGroup.get(0).parentID == lookAheadChildrenGroup.get(j).parentID){
+                             lookAheadChildrenGroup.add(lookAheadChildren.get(j));
+                             lookAheadChildren.remove(j);
+                     }
+             }
+
+             //Now We have a group of Children With the Same Parent
+             //Find Min/Max
+             if(lookAheadChildrenGroup.get(0).lookAhead%2==0){
+                     BoardStateSpace minChoice = lookAheadChildrenGroup.get(0);
+                     for(int z = 0; z < lookAheadChildrenGroup.size(); z++){
+                         if(playerMark.equals("O")){
+                             if(boardUpdater.countPlayer1PotentialWin(minChoice) > boardUpdater.countPlayer1PotentialWin(lookAheadChildrenGroup.get(z))){
+                                     minChoice = lookAheadChildrenGroup.get(z);
+                             }
+                         }
+                         else{
+                             if(boardUpdater.countPlayer2PotentialWin(minChoice) > boardUpdater.countPlayer2PotentialWin(lookAheadChildrenGroup.get(z))){
+                                     minChoice = lookAheadChildrenGroup.get(z);
+                             }
+                         }
+                             
+                     }
+                     
+                     minChoice.parent.potentialValue = minChoice.potentialValue;
+             }
+             else{
+                     BoardStateSpace maxChoice = lookAheadChildrenGroup.get(0);
+                     for(int z = 0; z < lookAheadChildrenGroup.size(); z++){
+                         if(playerMark.equals("X")){
+                             if(boardUpdater.countPlayer1PotentialWin(maxChoice) <= boardUpdater.countPlayer1PotentialWin(lookAheadChildrenGroup.get(z))){
+                                     maxChoice = lookAheadChildrenGroup.get(z);
+                             }
+                         }
+                         else{
+                             if(boardUpdater.countPlayer2PotentialWin(maxChoice) <= boardUpdater.countPlayer2PotentialWin(lookAheadChildrenGroup.get(z))){
+                                     maxChoice = lookAheadChildrenGroup.get(z);
+                             }
+                         }
+                             
+                     }
+                     
+                     maxChoice.parent.potentialValue = maxChoice.potentialValue;
+                     if(lookAheadCounter==1){
+                         //System.out.println("**********CHOICE IS: " + maxChoice.ge)
+                        
+                        return maxChoice;
+                     }
+             }
+        }
+        lookAheadCounter--;
+        
+    }
+        return null;
+    }
 //    
 //    
 //    

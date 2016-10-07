@@ -64,6 +64,7 @@ public class BoardStateSpace {
                     childBoard.getTile(i, j).setTileMark(mark);
                     childBoard.parent = this;
                     this.children.add(childBoard);
+                    childBoard.getTile(i, j).setTileMark("empty");
                 }
             }
         }
@@ -104,19 +105,31 @@ public class BoardStateSpace {
     
     
     
-    public void findUpdatedTile(BoardStateSpace updateStateSpace, GridPane gridBoard){
+    public void updateStateSpace(GridPane gridBoard){
+        System.out.println("Updating Display...");
+        
+       gridBoard.getChildren().clear();
+       gridBoard.setStyle("-fx-background-color: blue; -fx-padding: 2;");
         for(int i = 0; i < 4; i++){
             for(int j = 0; j < 4; j++){
-                if(this.board[i][j] != updateStateSpace.board[i][j]){
-                    this.board[i][j].setTileMark(updateStateSpace.board[i][j].getTileMark());
-                    ImageView mark = new ImageView();
-                    mark.setImage(new Image(updateStateSpace.board[i][j].getTileMark() + ".png"));
-                    mark.setStyle("-fx-background-color: whitesmoke; -fx-padding: 2;");
-                    GridPane.setConstraints(mark, j, i);
-                    gridBoard.getChildren().add(mark);
+                ImageView mark = new ImageView();
+                mark.setImage(new Image(this.board[i][j].getTileMark() + ".png"));
+                mark.setStyle("-fx-background-color: whitesmoke; -fx-padding: 2;");
+                GridPane.setConstraints(mark, j, i);
+                gridBoard.getChildren().add(mark);
+            }
+        }
+           
+    }
+    
+    public void flipOdd(BoardStateSpace updatedStateSpace, String flip){
+            for(int i = 0; i < 4; i++){
+                for(int j = 0; j < 4; j++){
+                    if(!this.board[i][j].getTileMark().equals(updatedStateSpace.getTile(i, j).getTileMark())){
+                        this.board[i][j].setTileMark(flip);
+                    }
                 }
             }
-        }      
-        
+            
     }
 }

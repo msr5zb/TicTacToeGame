@@ -201,11 +201,16 @@ public class FXMLDocumentController implements Initializable {
         boolean gameOver = false;
         while(!gameOver){
             aiTurn("Beginner", "X");
+            getBoardStateSpace().updateStateSpace(board);
             if(getBoardUpdater().checkIfWinner(workingBoardStateSpace)){
                 System.out.println("WINNER");
                 gameOver = true;
             }
-            aiTurn("Advanced", "X");
+            aiTurn("Advanced", "O");
+            getBoardStateSpace().updateStateSpace(board);
+            
+            
+            
             if(getBoardUpdater().checkIfWinner(workingBoardStateSpace)){
                 System.out.println("WINNER");
                 gameOver = true;
