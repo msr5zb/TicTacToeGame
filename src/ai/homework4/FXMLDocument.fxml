@@ -9,7 +9,7 @@
 
 <AnchorPane id="AnchorPane" fx:id="boardPane" prefHeight="619.0" prefWidth="679.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="ai.homework4.FXMLDocumentController">
   <children>
-    <GridPane fx:id="board" gridLinesVisible="true" layoutX="164.0" layoutY="88.0" prefHeight="412.0" prefWidth="412.0">
+    <GridPane fx:id="board" gridLinesVisible="true" layoutX="229.0" layoutY="88.0" prefHeight="412.0" prefWidth="412.0">
       <children>
         <ImageView fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="0" GridPane.rowIndex="0" />
         <ImageView fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="0" />
@@ -41,6 +41,13 @@
         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
       </rowConstraints>
     </GridPane>
-    <Button fx:id="resetButton" layoutX="51.0" layoutY="268.0" mnemonicParsing="false" onMouseClicked="#resetButtonClick" text="Reset" />
+    <Button fx:id="resetButton" layoutX="52.0" layoutY="310.0" mnemonicParsing="false" onMouseClicked="#resetButtonClick" text="Reset" />
+    <Label layoutX="313.0" layoutY="26.0" text="Player 1" />
+    <Label layoutX="519.0" layoutY="26.0" text="Player 2" />
+    <Button fx:id="beginnerVsMe" layoutX="17.0" layoutY="113.0" mnemonicParsing="false" onMouseClicked="#beginnerVsMeClick" text="Beginner vs. Me" />
+    <Button fx:id="beginnerVsAdvanced" layoutX="14.0" layoutY="147.0" mnemonicParsing="false" onMouseClicked="#beginnerVsAdvancedClick" text="Beginner vs. Advanced" />
+    <Button fx:id="advancedVsBeginner" layoutX="17.0" layoutY="179.0" mnemonicParsing="false" onMouseClicked="#advancedVsBeginnerClick" text="Advanced vs. Beginner" />
+    <Button id="advancedVsMAster" fx:id="advancedVsMaster" layoutX="17.0" layoutY="216.0" mnemonicParsing="false" onMouseClicked="#advancedVsMasterClick" text="Advanced vs. Master" />
+    <Button fx:id="masterVsAdvanced" layoutX="17.0" layoutY="247.0" mnemonicParsing="false" onMouseClicked="#masterVsAdvancedClick" text="Master vs. Advanced" />
   </children>
 </AnchorPane>

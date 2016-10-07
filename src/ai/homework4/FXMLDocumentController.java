@@ -41,12 +41,25 @@ public class FXMLDocumentController implements Initializable {
     
     private BoardStateSpace workingBoardStateSpace = new BoardStateSpace();
     private BoardUpdater boardUpdater= new BoardUpdater();
-    boolean playerTurn = true;
-    String playerMark = "X";
+    boolean player1Turn = true;
+    String player1Mark = "X";
+    boolean player2Turn = false;
+    String player2Mark = "O";
+    
     String aiMark = "O";
     String difficulty;
     @FXML
     private Button resetButton;
+    @FXML
+    private Button beginnerVsMe;
+    @FXML
+    private Button beginnerVsAdvanced;
+    @FXML
+    private Button advancedVsBeginner;
+    @FXML
+    private Button advancedVsMaster;
+    @FXML
+    private Button masterVsAdvanced;
     
     public BoardStateSpace getBoardStateSpace(){return this.workingBoardStateSpace;}
     public void setBoardStateSpace(BoardStateSpace newBoardStateSpace){this.workingBoardStateSpace = newBoardStateSpace;}
@@ -55,12 +68,12 @@ public class FXMLDocumentController implements Initializable {
     public GridPane getBoard(){return this.board;}
     
     
-    public boolean getPlayerTurn(){return this.playerTurn;}
-    public void setPlayerTurn(boolean value){this.playerTurn = value;}
+    public boolean getPlayer1Turn(){return this.player1Turn;}
+    public boolean getPlayer2Turn(){return this.player2Turn;}
     
-    public String getPlayerMark(){return this.playerMark;}
-    public void setPlayerMark(String value){this.playerMark = value;}
-    
+    public void setPlayer1Turn(boolean value){this.player1Turn = value;}
+    public void setPlayer2Turn(boolean value){this.player2Turn = value;}
+
     public String getAiMark(){return this.aiMark;}
     public void setAiMark(String value){this.aiMark = value;}    
     
@@ -69,9 +82,7 @@ public class FXMLDocumentController implements Initializable {
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {      
-        setPlayerMark("X");
-        setAiMark("O");
-        setDifficulty("Easy");
+      
         initializeNewGame(getBoard(), getBoardStateSpace());               
     }    
 
@@ -80,12 +91,37 @@ public class FXMLDocumentController implements Initializable {
     
     public void initializeNewGame(GridPane board, BoardStateSpace workingBoardStateSpace){
         
+       
+    }
+         
+
+    public void aiTurn(String difficulty, String playerMark){
+        
+        AIProcess newAI = new AIProcess();
+        
+        switch(difficulty){
+            case "Beginner": newAI.doBeginnerMove(this.board, this.getBoardStateSpace(), playerMark); break;
+            case "Advanced": newAI.doAdvancedMove(this.board, this.getBoardStateSpace(), playerMark, 2); break;
+            //case "Master": newAI.doMasterMove(this.board, this.getBoardStateSpace(), playerMark); break;
+        }
+    }
+
+    @FXML
+    private void resetButtonClick(MouseEvent event) {
+        
+    }
+
+    @FXML
+    private void beginnerVsMeClick(MouseEvent event) {
+        System.out.println("Setting Beginner vs. Me!");
+
         for(int i= 0; i < 4; i++){
             for(int j = 0; j < 4; j++){
                 workingBoardStateSpace.getTile(i, j).setTileMark("empty");
             }
         }
         
+            
         
        board.getChildren().clear();
        board.setStyle("-fx-background-color: blue; -fx-padding: 2;");
@@ -101,17 +137,18 @@ public class FXMLDocumentController implements Initializable {
                         int row = GridPane.getRowIndex((Node)event.getSource());
                         int column = GridPane.getColumnIndex((Node)event.getSource());
                         //Check if it's the Player's Turn...
-                        if(getPlayerTurn()){
+                        if(!getBoardStateSpace().getPlayer1Turn()){
+                            
                            //Check if Mark Available to Play
                            if(getBoardStateSpace().getTile(row, column).getTileMark().equals("empty")){
                                 System.out.println("Adding...");             
 
                                 //Update Board StateSpace
-                                getBoardStateSpace().getTile(row, column).setTileMark(getPlayerMark());
+                                getBoardStateSpace().getTile(row, column).setTileMark(getBoardStateSpace().getPlayer2Mark());
 
                                 //Update GUI - Add Image                                              
                                 ImageView workingImage = (ImageView)event.getSource();   
-                                workingImage.setImage(new Image("X.png"));
+                                workingImage.setImage(new Image("O.png"));
 
 
                                 //Check if Win
@@ -119,12 +156,18 @@ public class FXMLDocumentController implements Initializable {
                                     System.out.println("WINNER");
                                     //End Game - Clear Board
                                     //initializeNewGame(getBoard(), getBoardStateSpace());
-                                     setPlayerTurn(false);
+                                     getBoardStateSpace().setPlayer1Turn(true);
                                 }
                                 else{
                                     //Do Opponent's Move
-                                    //setPlayerTurn(false);
-                                    aiTurn();
+                                    getBoardStateSpace().setPlayer1Turn(true);
+                                    aiTurn("Beginner", "X");
+                                    getBoardStateSpace().setPlayer1Turn(false);
+                                    if(getBoardUpdater().checkIfWinner(workingBoardStateSpace)){
+                                        System.out.println("WINNER");
+                                         getBoardStateSpace().setPlayer1Turn(true);
+                                    }
+                                    
                                 }
 
                            }
@@ -134,32 +177,61 @@ public class FXMLDocumentController implements Initializable {
                         }
                         else{
                             System.out.println("You Must Wait Your Turn!");
+                            
                         }
                     }
                 });
                 mark.setStyle("-fx-background-color: whitesmoke; -fx-padding: 2;");
                 GridPane.setConstraints(mark, j, i);
                 board.getChildren().add(mark);
+                
             }
-        }  
-    }
-         
-
-    public void aiTurn(){
-        
-        AIProcess newAI = new AIProcess();
-        
-        switch(getDifficulty()){
-            //case "Beginner": newAI.doBeginnerMove(); break;
-            case "Advanced": newAI.doAdvancedMove(); break;
-            case "Master": newAI.doMasterMove(); break;
+        }   
+        aiTurn("Beginner", "X");
+        if(getBoardUpdater().checkIfWinner(workingBoardStateSpace)){
+            System.out.println("WINNER");
+             getBoardStateSpace().setPlayer1Turn(false);
         }
+        
+        setPlayer1Turn(false);
     }
 
     @FXML
-    private void resetButtonClick(MouseEvent event) {
-        initializeNewGame(getBoard(), getBoardStateSpace()); 
-        setPlayerTurn(true);
+    private void beginnerVsAdvancedClick(MouseEvent event) {
+        boolean gameOver = false;
+        while(!gameOver){
+            aiTurn("Beginner", "X");
+            if(getBoardUpdater().checkIfWinner(workingBoardStateSpace)){
+                System.out.println("WINNER");
+                gameOver = true;
+            }
+            aiTurn("Advanced", "X");
+            if(getBoardUpdater().checkIfWinner(workingBoardStateSpace)){
+                System.out.println("WINNER");
+                gameOver = true;
+            }
+        }
+        
+        
+        
+        
     }
+
+    @FXML
+    private void advancedVsBeginnerClick(MouseEvent event) {
+    }
+
+    @FXML
+    private void advancedVsMasterClick(MouseEvent event) {
+    }
+
+    @FXML
+    private void masterVsAdvancedClick(MouseEvent event) {
+    }
+    
+    
+    
+    
+    
     
 }

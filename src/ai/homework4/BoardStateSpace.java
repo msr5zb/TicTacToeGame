@@ -8,6 +8,9 @@ package ai.homework4;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
 
 /**
  *
@@ -20,13 +23,27 @@ public class BoardStateSpace {
     Tile[][] board = new Tile[ROWS][COLUMNS];
     int player1PotentialOf2;
     int player2PotentialOf2;
+    String player1Mark = "X";
+    String player2Mark = "O";
+    boolean player1Turn = true;
+    int nodeID = 0;
+    int parentID = 0;
+    int lookAhead = 0;
+    int potentialValue = 0;
+    BoardStateSpace parent;
+    
+    
     List<BoardStateSpace> children = new ArrayList<BoardStateSpace>();
     
-    
+    public List<BoardStateSpace> getChildren(){return this.children;}
+    public String getPlayer1Mark(){return this.player1Mark;}
+    public String getPlayer2Mark(){return this.player2Mark;}
+    public boolean getPlayer1Turn(){return this.player1Turn;}
+    public void setPlayer1Turn(boolean value){this.player1Turn = value;}
     public BoardStateSpace(){
             for(int i = 0; i < ROWS; i++){
                 for(int j = 0; j < COLUMNS; j++){
-                    this.board[i][j] = new Tile();
+                    this.board[i][j] = new Tile(i,j);
                 }
             }
     }
@@ -45,6 +62,7 @@ public class BoardStateSpace {
                     BoardStateSpace childBoard = new BoardStateSpace();
                     childBoard.cloneBoard(this);
                     childBoard.getTile(i, j).setTileMark(mark);
+                    childBoard.parent = this;
                     this.children.add(childBoard);
                 }
             }
@@ -52,12 +70,12 @@ public class BoardStateSpace {
     }
     
     public void cloneBoard(BoardStateSpace boardToClone){
-//Loop Through All Rooms, Cloning them one by one.
-//        for(int i = 0; i < 4.length; i++){
-//            for(int j = 0; j < 4[0].length; j++){
-//                clonedRoomsArray[i][j] = boardToClone[i][j].cloneTile(boardToClone[i][j]);
-//            }
-//        }
+        //Loop Through All Rooms, Cloning them one by one.
+        for(int i = 0; i < 4; i++){
+            for(int j = 0; j < 4; j++){
+                this.board[i][j] = boardToClone.getTile(i,j);
+            }
+        }
     }
     
     public int calculatePlayer1PotentialOf2(String mark){
@@ -83,4 +101,22 @@ public class BoardStateSpace {
     
     public int getPlayer1PotentialOf2(){return this.player1PotentialOf2;}
     public int getPlayer2PotentialOf2(){return this.player2PotentialOf2;}
+    
+    
+    
+    public void findUpdatedTile(BoardStateSpace updateStateSpace, GridPane gridBoard){
+        for(int i = 0; i < 4; i++){
+            for(int j = 0; j < 4; j++){
+                if(this.board[i][j] != updateStateSpace.board[i][j]){
+                    this.board[i][j].setTileMark(updateStateSpace.board[i][j].getTileMark());
+                    ImageView mark = new ImageView();
+                    mark.setImage(new Image(updateStateSpace.board[i][j].getTileMark() + ".png"));
+                    mark.setStyle("-fx-background-color: whitesmoke; -fx-padding: 2;");
+                    GridPane.setConstraints(mark, j, i);
+                    gridBoard.getChildren().add(mark);
+                }
+            }
+        }      
+        
+    }
 }

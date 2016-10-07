@@ -12,8 +12,14 @@ package ai.homework4;
 public class Tile {
    //Tile Mark can be Empty, X, or O
     String tileMark = "empty";
-    
-    public Tile(){}
+    int row;
+    int column;
+    int getRow(){return this.row;}
+    int getColumn(){return this.column;}
+    public Tile(int row, int column){
+        this.row = row;
+        this.column = column;
+    }
     public Tile(String mark){this.tileMark = mark;}
     public void setTileMark(String mark){this.tileMark = mark;}  
     public String getTileMark(){return this.tileMark;}

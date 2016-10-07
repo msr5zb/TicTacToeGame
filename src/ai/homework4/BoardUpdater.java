@@ -21,7 +21,7 @@ public class BoardUpdater {
  
     public BoardUpdater(){}
     
-    public void resetBoard(GridPane board, BoardStateSpace workingBoardStateSpace){
+    public void resetBoard(GridPane workingStateSpace, BoardStateSpace workingBoardStateSpace){
         //Reset The StateSpace
         for(int i= 0; i < 4; i++){
             for(int j = 0; j < 4; j++){
@@ -32,7 +32,7 @@ public class BoardUpdater {
         
     
         
-//        for (Node component : board.getChildren()) {
+//        for (Node component : workingStateSpace.getChildren()) {
 //            ImageView workingImage = (ImageView)component;   
 //            workingImage.setImage(new Image("empty.png"));
 //        }
@@ -41,12 +41,370 @@ public class BoardUpdater {
          
     }
     
-    public void synchBoard(GridPane board, BoardStateSpace workingBoardStateSpace){
-        
+    public Tile findNextEmpty(BoardStateSpace workingStateSpace){
+        for(int row = 0; row < 4; row++){
+            for(int col = 0; col < 4; col++){
+                if(workingStateSpace.getTile(row, col).getTileMark().equals("empty")){
+                    return workingStateSpace.getTile(row, col);
+                }
+            }
+        }
+        return null;
     }
     
+   public int countPlayer1PotentialWin(BoardStateSpace workingStateSpace){
+       int counter = 0;
+        //Check for three in a row
+        for(int row = 0; row < 4; row++){
+            for(int col = 0; col < 4; col++){
+
+
+                //Placements to Check
+
+                //2 Left
+                if(col-2>=0){
+                    if(workingStateSpace.getTile(row,col).getTileMark().equals("X") &&     
+                       workingStateSpace.getTile(row,col).getTileMark().equals(workingStateSpace.getTile(row,col-1).getTileMark()) && 
+                       workingStateSpace.getTile(row,col-2).getTileMark().equals("empty")){
+                        counter++;
+                    }
+                }
+                //2 Right
+                if(col+2<4){
+                    if(workingStateSpace.getTile(row,col).getTileMark().equals("X") &&
+                       workingStateSpace.getTile(row,col).getTileMark().equals(workingStateSpace.getTile(row,col+1).getTileMark()) &&
+                       workingStateSpace.getTile(row,col+2).getTileMark().equals("empty")){
+                        counter++;
+                    }
+                }
+
+
+                //2 Up
+                if(row-2>=0){
+                    if(workingStateSpace.getTile(row,col).getTileMark().equals("X") &&
+                       workingStateSpace.getTile(row,col).getTileMark().equals(workingStateSpace.getTile(row-1,col).getTileMark())&&
+                       workingStateSpace.getTile(row-2,col).getTileMark().equals("empty")){
+                        counter++;
+                    }
+                }
+
+                //2 Down
+                if(row+2<4){
+                    if(workingStateSpace.getTile(row,col).getTileMark().equals("X") &&
+                       workingStateSpace.getTile(row,col).getTileMark().equals(workingStateSpace.getTile(row+1,col).getTileMark())&&
+                       workingStateSpace.getTile(row+2,col).getTileMark().equals("empty")){
+                        counter++;
+                    }
+                }
+
+
+                //2 Diagonal Up-Left
+                if(row-2>=0 && col-2>=0){
+                    if(workingStateSpace.getTile(row,col).getTileMark().equals("X") &&
+                       workingStateSpace.getTile(row,col).getTileMark().equals(workingStateSpace.getTile(row-1,col-1).getTileMark())&&
+                       workingStateSpace.getTile(row-2,col-2).getTileMark().equals("empty")){
+                        counter++;
+                    }    
+                }
+
+                //2 Diagonal Up-Right
+                if(row-2>=0 && col+2<4){
+                    if(workingStateSpace.getTile(row,col).getTileMark().equals("X") &&
+                       workingStateSpace.getTile(row,col).getTileMark().equals(workingStateSpace.getTile(row-1,col+1).getTileMark())&&
+                       workingStateSpace.getTile(row-2,col+2).getTileMark().equals("empty")){
+                        counter++;
+                    }
+                }
+
+                //2 Diagonal Down-Left
+                if(row+2<4 && col-2>=0){
+                    if(workingStateSpace.getTile(row,col).getTileMark().equals("X") &&
+                       workingStateSpace.getTile(row,col).getTileMark().equals(workingStateSpace.getTile(row+1,col-1).getTileMark())&&
+                       workingStateSpace.getTile(row+2,col-2).getTileMark().equals("empty")){
+                        counter++;
+                    }
+                }
+
+                //2 Diagonal Down-Right
+                if(row+2<4 && col+2<4){
+                    if(workingStateSpace.getTile(row,col).getTileMark().equals("X") &&
+                       workingStateSpace.getTile(row,col).getTileMark().equals(workingStateSpace.getTile(row+1,col+1).getTileMark())&&
+                       workingStateSpace.getTile(row+2,col+2).getTileMark().equals("empty")){
+                        counter++;
+                    }
+                }
+   
+
+            }
+        }
+        return counter;     
+    }
     
-    public boolean checkIfWinner(BoardStateSpace board){
+    public int countPlayer2PotentialWin(BoardStateSpace workingStateSpace){
+        
+        int counter = 0;
+        
+        //Check for three in a row
+        for(int row = 0; row < 4; row++){
+            for(int col = 0; col < 4; col++){
+
+
+                //Placements to Check
+
+                //2 Left
+                if(col-2>=0){
+                    if(workingStateSpace.getTile(row,col).getTileMark().equals("O") &&     
+                       workingStateSpace.getTile(row,col).getTileMark().equals(workingStateSpace.getTile(row,col-1).getTileMark()) && 
+                       workingStateSpace.getTile(row,col-2).getTileMark().equals("empty")){
+                        counter++;
+                    }
+                }
+                //2 Right
+                if(col+2<4){
+                    if(workingStateSpace.getTile(row,col).getTileMark().equals("O") &&
+                       workingStateSpace.getTile(row,col).getTileMark().equals(workingStateSpace.getTile(row,col+1).getTileMark()) &&
+                       workingStateSpace.getTile(row,col+2).getTileMark().equals("empty")){
+                        counter++;
+                    }
+                }
+
+
+                //2 Up
+                if(row-2>=0){
+                    if(workingStateSpace.getTile(row,col).getTileMark().equals("O") &&
+                       workingStateSpace.getTile(row,col).getTileMark().equals(workingStateSpace.getTile(row-1,col).getTileMark())&&
+                       workingStateSpace.getTile(row-2,col).getTileMark().equals("empty")){
+                        counter++;
+                    }
+                }
+
+                //2 Down
+                if(row+2<4){
+                    if(workingStateSpace.getTile(row,col).getTileMark().equals("O") &&
+                       workingStateSpace.getTile(row,col).getTileMark().equals(workingStateSpace.getTile(row+1,col).getTileMark())&&
+                       workingStateSpace.getTile(row+2,col).getTileMark().equals("empty")){
+                        counter++;
+                    }
+                }
+
+
+                //2 Diagonal Up-Left
+                if(row-2>=0 && col-2>=0){
+                    if(workingStateSpace.getTile(row,col).getTileMark().equals("O") &&
+                       workingStateSpace.getTile(row,col).getTileMark().equals(workingStateSpace.getTile(row-1,col-1).getTileMark())&&
+                       workingStateSpace.getTile(row-2,col-2).getTileMark().equals("empty")){
+                        counter++;
+                    }    
+                }
+
+                //2 Diagonal Up-Right
+                if(row-2>=0 && col+2<4){
+                    if(workingStateSpace.getTile(row,col).getTileMark().equals("O") &&
+                       workingStateSpace.getTile(row,col).getTileMark().equals(workingStateSpace.getTile(row-1,col+1).getTileMark())&&
+                       workingStateSpace.getTile(row-2,col+2).getTileMark().equals("empty")){
+                        counter++;
+                    }
+                }
+
+                //2 Diagonal Down-Left
+                if(row+2<4 && col-2>=0){
+                    if(workingStateSpace.getTile(row,col).getTileMark().equals("O") &&
+                       workingStateSpace.getTile(row,col).getTileMark().equals(workingStateSpace.getTile(row+1,col-1).getTileMark())&&
+                       workingStateSpace.getTile(row+2,col-2).getTileMark().equals("empty")){
+                        counter++;
+                    }
+                }
+
+                //2 Diagonal Down-Right
+                if(row+2<4 && col+2<4){
+                    if(workingStateSpace.getTile(row,col).getTileMark().equals("O") &&
+                       workingStateSpace.getTile(row,col).getTileMark().equals(workingStateSpace.getTile(row+1,col+1).getTileMark())&&
+                       workingStateSpace.getTile(row+2,col+2).getTileMark().equals("empty")){
+                        counter++;
+                    }
+                }
+   
+
+            }
+        }
+        return counter;     
+    }    
+    
+    public Tile checkPlayer1PotentialWin(BoardStateSpace workingStateSpace){
+    //Check for three in a row
+        for(int row = 0; row < 4; row++){
+            for(int col = 0; col < 4; col++){
+
+
+                //Placements to Check
+
+                //2 Left
+                if(col-2>=0){
+                    if(workingStateSpace.getTile(row,col).getTileMark().equals("X") &&     
+                       workingStateSpace.getTile(row,col).getTileMark().equals(workingStateSpace.getTile(row,col-1).getTileMark()) && 
+                       workingStateSpace.getTile(row,col-2).getTileMark().equals("empty")){
+                        return workingStateSpace.getTile(row,col-2);
+                    }
+                }
+                //2 Right
+                if(col+2<4){
+                    if(workingStateSpace.getTile(row,col).getTileMark().equals("X") &&
+                       workingStateSpace.getTile(row,col).getTileMark().equals(workingStateSpace.getTile(row,col+1).getTileMark()) &&
+                       workingStateSpace.getTile(row,col+2).getTileMark().equals("empty")){
+                        return workingStateSpace.getTile(row,col+2);
+                    }
+                }
+
+
+                //2 Up
+                if(row-2>=0){
+                    if(workingStateSpace.getTile(row,col).getTileMark().equals("X") &&
+                       workingStateSpace.getTile(row,col).getTileMark().equals(workingStateSpace.getTile(row-1,col).getTileMark())&&
+                       workingStateSpace.getTile(row-2,col).getTileMark().equals("empty")){
+                        return workingStateSpace.getTile(row-2,col);
+                    }
+                }
+
+                //2 Down
+                if(row+2<4){
+                    if(workingStateSpace.getTile(row,col).getTileMark().equals("X") &&
+                       workingStateSpace.getTile(row,col).getTileMark().equals(workingStateSpace.getTile(row+1,col).getTileMark())&&
+                       workingStateSpace.getTile(row+2,col).getTileMark().equals("empty")){
+                        return workingStateSpace.getTile(row+2,col);
+                    }
+                }
+
+
+                //2 Diagonal Up-Left
+                if(row-2>=0 && col-2>=0){
+                    if(workingStateSpace.getTile(row,col).getTileMark().equals("X") &&
+                       workingStateSpace.getTile(row,col).getTileMark().equals(workingStateSpace.getTile(row-1,col-1).getTileMark())&&
+                       workingStateSpace.getTile(row-2,col-2).getTileMark().equals("empty")){
+                        return workingStateSpace.getTile(row-2,col-2);
+                    }    
+                }
+
+                //2 Diagonal Up-Right
+                if(row-2>=0 && col+2<4){
+                    if(workingStateSpace.getTile(row,col).getTileMark().equals("X") &&
+                       workingStateSpace.getTile(row,col).getTileMark().equals(workingStateSpace.getTile(row-1,col+1).getTileMark())&&
+                       workingStateSpace.getTile(row-2,col+2).getTileMark().equals("empty")){
+                        return workingStateSpace.getTile(row-2,col+2);
+                    }
+                }
+
+                //2 Diagonal Down-Left
+                if(row+2<4 && col-2>=0){
+                    if(workingStateSpace.getTile(row,col).getTileMark().equals("X") &&
+                       workingStateSpace.getTile(row,col).getTileMark().equals(workingStateSpace.getTile(row+1,col-1).getTileMark())&&
+                       workingStateSpace.getTile(row+2,col-2).getTileMark().equals("empty")){
+                        return workingStateSpace.getTile(row+2,col-2);
+                    }
+                }
+
+                //2 Diagonal Down-Right
+                if(row+2<4 && col+2<4){
+                    if(workingStateSpace.getTile(row,col).getTileMark().equals("X") &&
+                       workingStateSpace.getTile(row,col).getTileMark().equals(workingStateSpace.getTile(row+1,col+1).getTileMark())&&
+                       workingStateSpace.getTile(row+2,col+2).getTileMark().equals("empty")){
+                        return workingStateSpace.getTile(row+2,col+2);
+                    }
+                }
+   
+
+            }
+        }
+        return null;     
+    }
+    
+    public Tile checkPlayer2PotentialWin(BoardStateSpace workingStateSpace){
+    //Check for three in a row
+        for(int row = 0; row < 4; row++){
+            for(int col = 0; col < 4; col++){
+
+
+                //Placements to Check
+
+                //2 Left
+                if(col-2>=0){
+                    if(workingStateSpace.getTile(row,col).getTileMark().equals("O") &&     
+                       workingStateSpace.getTile(row,col).getTileMark().equals(workingStateSpace.getTile(row,col-1).getTileMark()) && 
+                       workingStateSpace.getTile(row,col-2).getTileMark().equals("empty")){
+                        return workingStateSpace.getTile(row,col-2);
+                    }
+                }
+                //2 Right
+                if(col+2<4){
+                    if(workingStateSpace.getTile(row,col).getTileMark().equals("O") &&
+                       workingStateSpace.getTile(row,col).getTileMark().equals(workingStateSpace.getTile(row,col+1).getTileMark()) &&
+                       workingStateSpace.getTile(row,col+2).getTileMark().equals("empty")){
+                        return workingStateSpace.getTile(row,col+2);
+                    }
+                }
+
+
+                //2 Up
+                if(row-2>=0){
+                    if(workingStateSpace.getTile(row,col).getTileMark().equals("O") &&
+                       workingStateSpace.getTile(row,col).getTileMark().equals(workingStateSpace.getTile(row-1,col).getTileMark())&&
+                       workingStateSpace.getTile(row-2,col).getTileMark().equals("empty")){
+                        return workingStateSpace.getTile(row-2,col);
+                    }
+                }
+
+                //2 Down
+                if(row+2<4){
+                    if(workingStateSpace.getTile(row,col).getTileMark().equals("O") &&
+                       workingStateSpace.getTile(row,col).getTileMark().equals(workingStateSpace.getTile(row+1,col).getTileMark())&&
+                       workingStateSpace.getTile(row+2,col).getTileMark().equals("empty")){
+                        return workingStateSpace.getTile(row+2,col);
+                    }
+                }
+
+
+                //2 Diagonal Up-Left
+                if(row-2>=0 && col-2>=0){
+                    if(workingStateSpace.getTile(row,col).getTileMark().equals("O") &&
+                       workingStateSpace.getTile(row,col).getTileMark().equals(workingStateSpace.getTile(row-1,col-1).getTileMark())&&
+                       workingStateSpace.getTile(row-2,col-2).getTileMark().equals("empty")){
+                        return workingStateSpace.getTile(row-2,col-2);
+                    }    
+                }
+
+                //2 Diagonal Up-Right
+                if(row-2>=0 && col+2<4){
+                    if(workingStateSpace.getTile(row,col).getTileMark().equals("O") &&
+                       workingStateSpace.getTile(row,col).getTileMark().equals(workingStateSpace.getTile(row-1,col+1).getTileMark())&&
+                       workingStateSpace.getTile(row-2,col+2).getTileMark().equals("empty")){
+                        return workingStateSpace.getTile(row-2,col+2);
+                    }
+                }
+
+                //2 Diagonal Down-Left
+                if(row+2<4 && col-2>=0){
+                    if(workingStateSpace.getTile(row,col).getTileMark().equals("O") &&
+                       workingStateSpace.getTile(row,col).getTileMark().equals(workingStateSpace.getTile(row+1,col-1).getTileMark())&&
+                       workingStateSpace.getTile(row+2,col-2).getTileMark().equals("empty")){
+                        return workingStateSpace.getTile(row+2,col-2);
+                    }
+                }
+
+                //2 Diagonal Down-Right
+                if(row+2<4 && col+2<4){
+                    if(workingStateSpace.getTile(row,col).getTileMark().equals("O") &&
+                       workingStateSpace.getTile(row,col).getTileMark().equals(workingStateSpace.getTile(row+1,col+1).getTileMark())&&
+                       workingStateSpace.getTile(row+2,col+2).getTileMark().equals("empty")){
+                        return workingStateSpace.getTile(row+2,col+2);
+                    }
+                }
+   
+
+            }
+        }
+        return null;     
+    }
+    
+    public boolean checkIfWinner(BoardStateSpace workingStateSpace){
      
         //Check for three in a row
         for(int row = 0; row < 4; row++){
@@ -57,89 +415,89 @@ public class BoardUpdater {
 
                 //2 Left
                 if(col-2>=0){
-                    if(!board.getTile(row,col).getTileMark().equals("empty") &&
-                       board.getTile(row,col).getTileMark().equals(board.getTile(row,col-1).getTileMark()) && 
-                       board.getTile(row,col-1).getTileMark().equals(board.getTile(row,col-2).getTileMark())){
+                    if(!workingStateSpace.getTile(row,col).getTileMark().equals("empty") &&
+                       workingStateSpace.getTile(row,col).getTileMark().equals(workingStateSpace.getTile(row,col-1).getTileMark()) && 
+                       workingStateSpace.getTile(row,col-1).getTileMark().equals(workingStateSpace.getTile(row,col-2).getTileMark())){
                         return true;
                     }
                 }
                 //2 Right
                 if(col+2<4){
-                    if(!board.getTile(row,col).getTileMark().equals("empty") &&
-                       board.getTile(row,col).getTileMark().equals(board.getTile(row,col+1).getTileMark()) &&
-                       board.getTile(row,col+1).getTileMark().equals(board.getTile(row,col+2).getTileMark())){
+                    if(!workingStateSpace.getTile(row,col).getTileMark().equals("empty") &&
+                       workingStateSpace.getTile(row,col).getTileMark().equals(workingStateSpace.getTile(row,col+1).getTileMark()) &&
+                       workingStateSpace.getTile(row,col+1).getTileMark().equals(workingStateSpace.getTile(row,col+2).getTileMark())){
                         return true;
                     }
                 }
 
                 //1 Left and 1 Right
                 if(col-1>=0 && col+1<4){
-                    if(!board.getTile(row,col).getTileMark().equals("empty") &&
-                       board.getTile(row,col).getTileMark().equals(board.getTile(row,col-1).getTileMark())&&
-                       board.getTile(row,col-1).getTileMark().equals(board.getTile(row,col+1).getTileMark())){
+                    if(!workingStateSpace.getTile(row,col).getTileMark().equals("empty") &&
+                       workingStateSpace.getTile(row,col).getTileMark().equals(workingStateSpace.getTile(row,col-1).getTileMark())&&
+                       workingStateSpace.getTile(row,col-1).getTileMark().equals(workingStateSpace.getTile(row,col+1).getTileMark())){
                         return true;
                     }   
                 }
 
                 //2 Up
                 if(row-2>=0){
-                    if(!board.getTile(row,col).getTileMark().equals("empty") &&
-                       board.getTile(row,col).getTileMark().equals(board.getTile(row-1,col).getTileMark())&&
-                       board.getTile(row-1,col).getTileMark().equals(board.getTile(row-2,col).getTileMark())){
+                    if(!workingStateSpace.getTile(row,col).getTileMark().equals("empty") &&
+                       workingStateSpace.getTile(row,col).getTileMark().equals(workingStateSpace.getTile(row-1,col).getTileMark())&&
+                       workingStateSpace.getTile(row-1,col).getTileMark().equals(workingStateSpace.getTile(row-2,col).getTileMark())){
                         return true;
                     }
                 }
 
                 //2 Down
                 if(row+2<4){
-                    if(!board.getTile(row,col).getTileMark().equals("empty") &&
-                       board.getTile(row,col).getTileMark().equals(board.getTile(row+1,col).getTileMark())&&
-                       board.getTile(row+1,col).getTileMark().equals(board.getTile(row+2,col).getTileMark())){
+                    if(!workingStateSpace.getTile(row,col).getTileMark().equals("empty") &&
+                       workingStateSpace.getTile(row,col).getTileMark().equals(workingStateSpace.getTile(row+1,col).getTileMark())&&
+                       workingStateSpace.getTile(row+1,col).getTileMark().equals(workingStateSpace.getTile(row+2,col).getTileMark())){
                         return true;
                     }
                 }
 
                 //1 Up 1 Down
                 if(row-1>=0 && row+1<4){
-                    if(!board.getTile(row,col).getTileMark().equals("empty") &&
-                       board.getTile(row,col).getTileMark().equals(board.getTile(row-1,col).getTileMark())&&
-                       board.getTile(row-1,col).getTileMark().equals(board.getTile(row+1,col).getTileMark())){
+                    if(!workingStateSpace.getTile(row,col).getTileMark().equals("empty") &&
+                       workingStateSpace.getTile(row,col).getTileMark().equals(workingStateSpace.getTile(row-1,col).getTileMark())&&
+                       workingStateSpace.getTile(row-1,col).getTileMark().equals(workingStateSpace.getTile(row+1,col).getTileMark())){
                         return true;
                     }    
                 }
 
                 //2 Diagonal Up-Left
                 if(row-2>=0 && col-2>=0){
-                    if(!board.getTile(row,col).getTileMark().equals("empty") &&
-                       board.getTile(row,col).getTileMark().equals(board.getTile(row-1,col-1).getTileMark())&&
-                       board.getTile(row-1,col-1).getTileMark().equals(board.getTile(row-2,col-2).getTileMark())){
+                    if(!workingStateSpace.getTile(row,col).getTileMark().equals("empty") &&
+                       workingStateSpace.getTile(row,col).getTileMark().equals(workingStateSpace.getTile(row-1,col-1).getTileMark())&&
+                       workingStateSpace.getTile(row-1,col-1).getTileMark().equals(workingStateSpace.getTile(row-2,col-2).getTileMark())){
                         return true;
                     }    
                 }
 
                 //2 Diagonal Up-Right
                 if(row-2>=0 && col+2<4){
-                    if(!board.getTile(row,col).getTileMark().equals("empty") &&
-                       board.getTile(row,col).getTileMark().equals(board.getTile(row-1,col+1).getTileMark())&&
-                       board.getTile(row-1,col+1).getTileMark().equals(board.getTile(row-2,col+2).getTileMark())){
+                    if(!workingStateSpace.getTile(row,col).getTileMark().equals("empty") &&
+                       workingStateSpace.getTile(row,col).getTileMark().equals(workingStateSpace.getTile(row-1,col+1).getTileMark())&&
+                       workingStateSpace.getTile(row-1,col+1).getTileMark().equals(workingStateSpace.getTile(row-2,col+2).getTileMark())){
                         return true;
                     }
                 }
 
                 //2 Diagonal Down-Left
                 if(row+2<4 && col-2>=0){
-                    if(!board.getTile(row,col).getTileMark().equals("empty") &&
-                       board.getTile(row,col).getTileMark().equals(board.getTile(row+1,col-1).getTileMark())&&
-                       board.getTile(row+1,col-1).getTileMark().equals(board.getTile(row+2,col-2).getTileMark())){
+                    if(!workingStateSpace.getTile(row,col).getTileMark().equals("empty") &&
+                       workingStateSpace.getTile(row,col).getTileMark().equals(workingStateSpace.getTile(row+1,col-1).getTileMark())&&
+                       workingStateSpace.getTile(row+1,col-1).getTileMark().equals(workingStateSpace.getTile(row+2,col-2).getTileMark())){
                         return true;
                     }
                 }
 
                 //2 Diagonal Down-Right
                 if(row+2<4 && col+2<4){
-                    if(!board.getTile(row,col).getTileMark().equals("empty") &&
-                       board.getTile(row,col).getTileMark().equals(board.getTile(row+1,col+1).getTileMark())&&
-                       board.getTile(row+1,col+1).getTileMark().equals(board.getTile(row+2,col+2).getTileMark())){
+                    if(!workingStateSpace.getTile(row,col).getTileMark().equals("empty") &&
+                       workingStateSpace.getTile(row,col).getTileMark().equals(workingStateSpace.getTile(row+1,col+1).getTileMark())&&
+                       workingStateSpace.getTile(row+1,col+1).getTileMark().equals(workingStateSpace.getTile(row+2,col+2).getTileMark())){
                         return true;
                     }
                 }
@@ -147,18 +505,18 @@ public class BoardUpdater {
 
                 //1 Diagonal Up-Left, 1 Diagonal Down-Right
                 if(row-1>=0 && row+1<4 && col-1>=0 && col+1<4){
-                    if(!board.getTile(row,col).getTileMark().equals("empty") &&
-                       board.getTile(row,col).getTileMark().equals(board.getTile(row-1,col-1).getTileMark())&&
-                       board.getTile(row-1,col-1).getTileMark().equals(board.getTile(row+1,col+1).getTileMark())){
+                    if(!workingStateSpace.getTile(row,col).getTileMark().equals("empty") &&
+                       workingStateSpace.getTile(row,col).getTileMark().equals(workingStateSpace.getTile(row-1,col-1).getTileMark())&&
+                       workingStateSpace.getTile(row-1,col-1).getTileMark().equals(workingStateSpace.getTile(row+1,col+1).getTileMark())){
                         return true;
                     }
                 }
 
                 //1 Diagonal Up-Right, 1 Diagonal Down-Left
                 if(row-1>=0 && row+1<4 && col-1>=0 && col+1<4){
-                    if(!board.getTile(row,col).getTileMark().equals("empty") &&
-                       board.getTile(row,col).getTileMark().equals(board.getTile(row-1,col+1).getTileMark())&&
-                       board.getTile(row-1,col+1).getTileMark().equals(board.getTile(row+1,col-1).getTileMark())){
+                    if(!workingStateSpace.getTile(row,col).getTileMark().equals("empty") &&
+                       workingStateSpace.getTile(row,col).getTileMark().equals(workingStateSpace.getTile(row-1,col+1).getTileMark())&&
+                       workingStateSpace.getTile(row-1,col+1).getTileMark().equals(workingStateSpace.getTile(row+1,col-1).getTileMark())){
                         return true;
                     }
                 }
