@@ -139,7 +139,7 @@ public class AIProcess {
                 //Expand Node's Children  
                 if(lookAhead%2 == 0 && workingChildrenStateSpace.lookAhead < 2){
           
-                    workingChildrenStateSpace.generateChildrenStateSpaces("O");
+                    workingChildrenStateSpace.generateChildrenStateSpaces(playerMark);
                     List<BoardStateSpace> children = new ArrayList<BoardStateSpace>();
                     children = workingChildrenStateSpace.getChildren();
                     System.out.println("Number of Children is: " + children.size());
@@ -155,7 +155,7 @@ public class AIProcess {
                 }
                 else{
                     if(workingChildrenStateSpace.lookAhead < 2){
-                        workingChildrenStateSpace.generateChildrenStateSpaces("X");
+                        workingChildrenStateSpace.generateChildrenStateSpaces(swapPlayerMark(playerMark));
                         List<BoardStateSpace> children = new ArrayList<BoardStateSpace>();
                         children = workingChildrenStateSpace.getChildren();
                         System.out.println("Number of Children is: " + children.size());
@@ -177,7 +177,7 @@ public class AIProcess {
         
         workingStateSpace =  miniMax(fringeCalculation, playerMark, depth);
         
-        
+   
         }
         
         
@@ -257,7 +257,7 @@ public class AIProcess {
                      
                      maxChoice.parent.potentialValue = maxChoice.potentialValue;
                      if(lookAheadCounter==1){
-                         //System.out.println("**********CHOICE IS: " + maxChoice.ge)
+                         System.out.println("**********playerMark IS: " + playerMark);
                         
                         return maxChoice;
                      }
@@ -267,6 +267,15 @@ public class AIProcess {
         
     }
         return null;
+    }
+    
+    public String swapPlayerMark(String playerMark){
+        if(playerMark.equals("X")){
+            return "O";
+        }
+        else{
+            return "X";
+        }
     }
 //    
 //    
