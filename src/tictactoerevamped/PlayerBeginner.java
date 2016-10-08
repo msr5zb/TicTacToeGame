@@ -26,7 +26,7 @@ public class PlayerBeginner {
     }
     
     public BoardStateSpace doMove(BoardStateSpace startingStateSpace){
-        System.out.println("AI's Move");
+        System.out.println("Beginner's Move");
         BoardStateSpace workingStateSpace = new BoardStateSpace();
         workingStateSpace.cloneStateSpace(startingStateSpace);
         
@@ -34,9 +34,12 @@ public class PlayerBeginner {
         
         if(this.myMark.equals("X")){
             //Check
-            Tile tileCheck1 = processBoard.checkPlayerXPotentialWin(workingStateSpace);
-            Tile tileCheck2 = processBoard.checkPlayerOPotentialWin(workingStateSpace);
-            Tile tileCheck3 = processBoard.findNextEmpty(workingStateSpace);
+            Tile tileCheck1 = new Tile();
+            Tile tileCheck2 = new Tile();
+            Tile tileCheck3 = new Tile();
+            tileCheck1 = processBoard.checkPlayerXPotentialWin(workingStateSpace);
+            tileCheck2 = processBoard.checkPlayerOPotentialWin(workingStateSpace);
+            tileCheck3 = processBoard.findNextEmpty(workingStateSpace);
             
             if (tileCheck1 != null){tileCheck1.setTileMark("X");}
             else if(tileCheck2 != null){tileCheck2.setTileMark("X");}
@@ -46,17 +49,20 @@ public class PlayerBeginner {
         }
         else{
             //Check
-            Tile tileCheck1 = processBoard.checkPlayerOPotentialWin(workingStateSpace);
-            Tile tileCheck2 = processBoard.checkPlayerXPotentialWin(workingStateSpace);
-            Tile tileCheck3 = processBoard.findNextEmpty(workingStateSpace);
+            Tile tileCheck1 = new Tile();
+            Tile tileCheck2 = new Tile();
+            Tile tileCheck3 = new Tile();
+            tileCheck1 = processBoard.checkPlayerOPotentialWin(workingStateSpace);
+            tileCheck2 = processBoard.checkPlayerXPotentialWin(workingStateSpace);
+            tileCheck3 = processBoard.findNextEmpty(workingStateSpace);
             
             if (tileCheck1 != null){tileCheck1.setTileMark("O");}
-            else if(tileCheck2 != null){tileCheck1.setTileMark("O");}
+            else if(tileCheck2 != null){tileCheck2.setTileMark("O");}
             else if(tileCheck3 != null){tileCheck3.setTileMark("O");}
             else{System.out.println("CATS GAME! LOL");}
         }
         
-        workingStateSpace.printBoard();
+        //workingStateSpace.printBoard();
         return workingStateSpace;
         
         

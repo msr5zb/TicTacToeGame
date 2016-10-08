@@ -170,48 +170,182 @@ public class FXMLDocumentController implements Initializable {
 
     @FXML
     private void beginnerVsAdvancedClick(MouseEvent event) {
+        for(int i= 0; i < 4; i++){
+            for(int j = 0; j < 4; j++){
+                getCurrentStateSpace().board[i][j].setTileMark("empty");
+            }
+        }
+                
         boolean gameOver = false;
         PlayerBeginner playerBeginner = new PlayerBeginner("X");
         PlayerAdvanced playerAdvanced = new PlayerAdvanced("O");
         
         while(!gameOver){
             
-            try {Thread.sleep(1000);} catch (InterruptedException ex) {Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);}    
-            
+               
+            try {Thread.sleep(200);} catch (InterruptedException ex) {Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);} 
             //Beginner Does Move
             setCurrentStateSpace(playerBeginner.doMove(getCurrentStateSpace()));
             getCurrentStateSpace().updateDisplay(board);
+            getCurrentStateSpace().printBoard();
             
             //Check if Won
             if(processBoard.checkIfWinner(getCurrentStateSpace())){
-                System.out.println("WINNER");
+                System.out.println("WINNER is Beginner!");
                 gameOver = true;
+                break;
             }
             
-            try {Thread.sleep(1000);} catch (InterruptedException ex) {Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);}    
+            try {Thread.sleep(200);} catch (InterruptedException ex) {Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);}    
             
             //Advanced Does Move
             setCurrentStateSpace(playerAdvanced.doMove(getCurrentStateSpace()));
             getCurrentStateSpace().updateDisplay(board);
+            getCurrentStateSpace().printBoard();
                
             //Check if Won
             if(processBoard.checkIfWinner(getCurrentStateSpace())){
-                System.out.println("WINNER");
+                System.out.println("WINNER is Advanced!");
                 gameOver = true;
+                break;
             }
         }       
     }
 
     @FXML
     private void advancedVsBeginnerClick(MouseEvent event) {
+        for(int i= 0; i < 4; i++){
+            for(int j = 0; j < 4; j++){
+                getCurrentStateSpace().board[i][j].setTileMark("empty");
+            }
+        }        
+        
+        
+        
+        boolean gameOver = false;
+        PlayerAdvanced playerAdvanced = new PlayerAdvanced("X");
+        PlayerBeginner playerBeginner = new PlayerBeginner("O");
+        
+        while(!gameOver){
+            
+            
+            //Advanced Does Move
+            setCurrentStateSpace(playerAdvanced.doMove(getCurrentStateSpace()));
+            getCurrentStateSpace().updateDisplay(board);
+            getCurrentStateSpace().printBoard();
+               
+            //Check if Won
+            if(processBoard.checkIfWinner(getCurrentStateSpace())){
+                System.out.println("WINNER is Advanceddd!");
+                gameOver = true;
+                break;
+            }
+            
+            
+            //Beginner Does Move
+            setCurrentStateSpace(playerBeginner.doMove(getCurrentStateSpace()));
+            getCurrentStateSpace().updateDisplay(board);
+            getCurrentStateSpace().printBoard();
+            
+            //Check if Won
+            if(processBoard.checkIfWinner(getCurrentStateSpace())){
+                System.out.println("WINNER is Beginnerrr!");
+                gameOver = true;
+                break;
+            }
+        }  
     }
 
     @FXML
     private void advancedVsMasterClick(MouseEvent event) {
+        for(int i= 0; i < 4; i++){
+            for(int j = 0; j < 4; j++){
+                getCurrentStateSpace().board[i][j].setTileMark("empty");
+            }
+        }        
+        
+        
+        
+        boolean gameOver = false;
+        PlayerAdvanced playerAdvanced = new PlayerAdvanced("X");
+        PlayerMaster playerMaster = new PlayerMaster("O");
+        
+        while(!gameOver){
+            
+            
+            //Advanced Does Move
+            setCurrentStateSpace(playerAdvanced.doMove(getCurrentStateSpace()));
+            getCurrentStateSpace().updateDisplay(board);
+            getCurrentStateSpace().printBoard();
+               
+            //Check if Won
+            if(processBoard.checkIfWinner(getCurrentStateSpace())){
+                System.out.println("WINNER is Advanceddd!");
+                gameOver = true;
+                break;
+            }
+            
+            
+            //Master Does Move
+            setCurrentStateSpace(playerMaster.doMove(getCurrentStateSpace()));
+            getCurrentStateSpace().updateDisplay(board);
+            getCurrentStateSpace().printBoard();
+            
+            //Check if Won
+            if(processBoard.checkIfWinner(getCurrentStateSpace())){
+                System.out.println("WINNER is Master!");
+                gameOver = true;
+                break;
+            }
+        }      
     }
 
     @FXML
     private void masterVsAdvancedClick(MouseEvent event) {
+        for(int i= 0; i < 4; i++){
+            for(int j = 0; j < 4; j++){
+                getCurrentStateSpace().board[i][j].setTileMark("empty");
+            }
+        }        
+        
+        
+        
+        boolean gameOver = false;
+        PlayerMaster playerMaster = new PlayerMaster("X");
+        PlayerAdvanced playerAdvanced = new PlayerAdvanced("O");
+        
+        while(!gameOver){
+            
+            
+
+            
+            
+            //Master Does Move
+            setCurrentStateSpace(playerMaster.doMove(getCurrentStateSpace()));
+            getCurrentStateSpace().updateDisplay(board);
+            getCurrentStateSpace().printBoard();
+            
+            //Check if Won
+            if(processBoard.checkIfWinner(getCurrentStateSpace())){
+                System.out.println("WINNER is Master!");
+                gameOver = true;
+                break;
+            }
+            
+            
+            //Advanced Does Move
+            setCurrentStateSpace(playerAdvanced.doMove(getCurrentStateSpace()));
+            getCurrentStateSpace().updateDisplay(board);
+            getCurrentStateSpace().printBoard();
+               
+            //Check if Won
+            if(processBoard.checkIfWinner(getCurrentStateSpace())){
+                System.out.println("WINNER is Advanceddd!");
+                gameOver = true;
+                break;
+            }
+        }
+        
     }
     
     

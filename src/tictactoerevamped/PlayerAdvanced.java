@@ -23,86 +23,199 @@ public class PlayerAdvanced {
         else{this.opponentsMark = "X";}
         
     }
+  
     
-    public BoardStateSpace doMove(BoardStateSpace StartingStateSpace){
+    public BoardStateSpace doMove(BoardStateSpace originalStateSpace){
+        System.out.println("Advanced Move");
+        
+        //Clone original StateSpace to work with.
+        BoardStateSpace workingStateSpace = new BoardStateSpace();
+        workingStateSpace.cloneStateSpace(originalStateSpace);
         
         
-        BoardStateSpace parentStateSpace = new BoardStateSpace();
-        parentStateSpace.cloneStateSpace(StartingStateSpace);
+        BoardStateSpace workingChildrenStateSpace = new BoardStateSpace();
+        BoardStateSpace chosenMove1st = new BoardStateSpace();
+        int chosenLocation = -1;
+        workingChildrenStateSpace.cloneStateSpace(workingStateSpace);
         
-        //We will only be looking two steps ahead!
-        int lookAheadCounter;
-        //Create a Fringe to Generate all StateSpaces
-        List<BoardStateSpace> stateSpaceGenerationFringe = new ArrayList<BoardStateSpace>(); 
-        //Create a Fringe To Hold all StateSpaces... We Will Use This to Find Mins/Maxes
-        List<BoardStateSpace> allStateSpaceHolder = new ArrayList<BoardStateSpace>(); 
-       
-        int parentID = -1;
-        int nodeID = 0;
-        int lookAhead = 0;
-        
-        parentStateSpace.parentID = parentID;
-        parentStateSpace.nodeID = nodeID;
-        parentStateSpace.lookAhead = lookAhead;
-                
-        //Add Our Beginning Node to Fringes
-        stateSpaceGenerationFringe.add(parentStateSpace);
-        allStateSpaceHolder.add(parentStateSpace);
-        
-        //While We have Something in our Fringe...
-        while(!stateSpaceGenerationFringe.isEmpty()){
+        if(this.myMark.equals("X")){
+            //Check
+            Tile tileCheck1 = new Tile();
+            Tile tileCheck2 = new Tile();
+            tileCheck1 = boardProcessor.checkPlayerXPotentialWin(workingStateSpace);
+            tileCheck2 = boardProcessor.checkPlayerOPotentialWin(workingStateSpace);
             
-            //Get First Thing in Fringe
-            BoardStateSpace workingStateSpace = stateSpaceGenerationFringe.get(0);
-            //Remove it From Fringe after we Get it
-            stateSpaceGenerationFringe.remove(0);
-            
-            if(workingStateSpace.lookAhead > 2){break;}
-            
-            //Generate Children Based off this Fringe
-            if(workingStateSpace.lookAhead%2 == 0){
-                //Generate Children StateSpaces where We can Make Our Move
-                workingStateSpace.generateChildrenStateSpaces(this.myMark);
-                List<BoardStateSpace> children = new ArrayList<BoardStateSpace>();
-                children = workingStateSpace.children;
-                for(int i = 0; i < children.size(); i++) {
-                    children.get(i).generateHValue(this.myMark);
-                    children.get(i).nodeID = ++nodeID;
-                    children.get(i).parentID = workingStateSpace.parentID;
-                    children.get(i).lookAhead = workingStateSpace.lookAhead+1;
-                    stateSpaceGenerationFringe.add(children.get(i));
-                    allStateSpaceHolder.add(children.get(i));
-                }
-                
-                
+            if (tileCheck1 != null){
+                workingChildrenStateSpace.board[tileCheck1.row][tileCheck1.column].setTileMark(this.myMark);           
+                return workingChildrenStateSpace;
             }
-            
-            if(workingStateSpace.lookAhead%2 == 1){
-                //Based off Our Initial Move, Let's Generate Children on Where the Opponent Will Make His Move
-                workingStateSpace.generateChildrenStateSpaces(this.opponentsMark);
-                List<BoardStateSpace> children = new ArrayList<BoardStateSpace>();
-                children = workingStateSpace.children;
-                for(int i = 0; i < children.size(); i++) {
-                    children.get(i).nodeID = ++nodeID;
-                    workingStateSpace.generateChildrenStateSpaces(this.myMark);
-                    children.get(i).parentID = workingStateSpace.parentID;
-                    children.get(i).lookAhead = workingStateSpace.lookAhead+1;
-                    stateSpaceGenerationFringe.add(children.get(i));
-                    allStateSpaceHolder.add(children.get(i));
-                }            
+            else if(tileCheck2 != null){
+                workingChildrenStateSpace.board[tileCheck1.row][tileCheck1.column].setTileMark(this.myMark);  
+                return workingChildrenStateSpace;
             }
-            
-
-            
-            System.out.println("At Level " + workingStateSpace.lookAhead + ", We have a total of: " + stateSpaceGenerationFringe.size() + " children.");
+        
         }
-                
-        //Now, We Should be Left with a Fringe that Contains All StateSpaces with Their information in them - allStateSpaceHolder 
-        //We Will Use This to Determine Which StateSpace We Want!
-        //BoardStateSpace bestMove = miniMax(allStateSpaceHolder);
+        else{
+            //Check
+            Tile tileCheck1 = new Tile();
+            Tile tileCheck2 = new Tile();
+            tileCheck1 = boardProcessor.checkPlayerOPotentialWin(workingStateSpace);
+            tileCheck2 = boardProcessor.checkPlayerXPotentialWin(workingStateSpace);
+            
+            if (tileCheck1 != null){
+                workingChildrenStateSpace.board[tileCheck1.row][tileCheck1.column].setTileMark(this.myMark);
+                return workingChildrenStateSpace;}
+            else if(tileCheck2 != null){
+                workingChildrenStateSpace.board[tileCheck2.row][tileCheck2.column].setTileMark(this.myMark);
+                return workingChildrenStateSpace;
+            }
+        }        
         
-        return StartingStateSpace;
-    }   
+        
+        
+        
+        
+        workingChildrenStateSpace.generateChildrenStateSpaces(this.myMark);
+        List<BoardStateSpace> children = new ArrayList<BoardStateSpace>();
+        List<BoardStateSpace> children2ndMove = new ArrayList<BoardStateSpace>();
+        List<BoardStateSpace> chosenMoves = new ArrayList<BoardStateSpace>();
+        
+        children = workingChildrenStateSpace.children;
+        System.out.println("Number of Children is: " + children.size());
+        
+          for(int i = 0; i < children.size(); i++) {
+              //Generate 3rd Gen
+              children.get(i).generateChildrenStateSpaces(this.opponentsMark);
+              children2ndMove = children.get(i).children;
+              
+              //Choose Worst Move of the Children for it's parent.
+              chosenMoves.add(min(children2ndMove, this.myMark));
+              children2ndMove.clear();
+          }
+          chosenMove1st = max(chosenMoves, this.myMark);
+          chosenLocation = chosenMoves.indexOf(chosenMove1st);
+          System.out.println("ChosenLocation is :" + chosenLocation);
+          workingStateSpace = children.get(chosenLocation);
+          
+          return workingStateSpace;
+    }
+    
+    public BoardStateSpace min(List<BoardStateSpace> children, String playerMark){
+      BoardStateSpace minChoice = new BoardStateSpace();
+      minChoice = children.get(0);
+      for(int i = 0; i < children.size(); i++){
+          if(playerMark.equals("O")){
+              if(boardProcessor.countPlayerXPotentialWin(minChoice) > boardProcessor.countPlayerXPotentialWin(children.get(i))){
+                      minChoice = children.get(i);
+              }
+          }
+          else{
+              if(boardProcessor.countPlayerOPotentialWin(minChoice) > boardProcessor.countPlayerOPotentialWin(children.get(i))){
+                      minChoice = children.get(i);
+              }
+          }   
+      }
+      return minChoice;    
+    }
+    
+    public BoardStateSpace max(List<BoardStateSpace> children, String playerMark){
+        BoardStateSpace minChoice = new BoardStateSpace();
+        minChoice = children.get(0);
+        for(int i = 0; i < children.size(); i++){
+            if(playerMark.equals("O")){
+                if(boardProcessor.countPlayerOPotentialWin(minChoice) < boardProcessor.countPlayerOPotentialWin(children.get(i))){
+                        minChoice = children.get(i);
+                }
+            }
+            else{
+                if(boardProcessor.countPlayerXPotentialWin(minChoice) < boardProcessor.countPlayerXPotentialWin(children.get(i))){
+                        minChoice = children.get(i);
+                }
+            }   
+        }
+        return minChoice;   
+    }
+    
+    
+//    public BoardStateSpace doMove(BoardStateSpace StartingStateSpace){
+//        
+//        
+//        BoardStateSpace parentStateSpace = new BoardStateSpace();
+//        parentStateSpace.cloneStateSpace(StartingStateSpace);
+//        
+//        //We will only be looking two steps ahead!
+//        int lookAheadCounter;
+//        //Create a Fringe to Generate all StateSpaces
+//        List<BoardStateSpace> stateSpaceGenerationFringe = new ArrayList<BoardStateSpace>(); 
+//        //Create a Fringe To Hold all StateSpaces... We Will Use This to Find Mins/Maxes
+//        List<BoardStateSpace> allStateSpaceHolder = new ArrayList<BoardStateSpace>(); 
+//       
+//        int parentID = -1;
+//        int nodeID = 0;
+//        int lookAhead = 0;
+//        
+//        parentStateSpace.parentID = parentID;
+//        parentStateSpace.nodeID = nodeID;
+//        parentStateSpace.lookAhead = lookAhead;
+//                
+//        //Add Our Beginning Node to Fringes
+//        stateSpaceGenerationFringe.add(parentStateSpace);
+//        allStateSpaceHolder.add(parentStateSpace);
+//        
+//        //While We have Something in our Fringe...
+//        while(!stateSpaceGenerationFringe.isEmpty()){
+//            
+//            //Get First Thing in Fringe
+//            BoardStateSpace workingStateSpace = stateSpaceGenerationFringe.get(0);
+//            //Remove it From Fringe after we Get it
+//            stateSpaceGenerationFringe.remove(0);
+//            
+//            if(workingStateSpace.lookAhead > 1){break;}
+//            
+//            //Generate Children Based off this Fringe
+//            if(workingStateSpace.lookAhead%2 == 0){
+//                //Generate Children StateSpaces where We can Make Our Move
+//                workingStateSpace.generateChildrenStateSpaces(this.myMark);
+//                List<BoardStateSpace> children = new ArrayList<BoardStateSpace>();
+//                children = workingStateSpace.children;
+//                for(int i = 0; i < children.size(); i++) {
+//                    children.get(i).generateHValue(this.myMark);
+//                    children.get(i).nodeID = ++nodeID;
+//                    children.get(i).parentID = workingStateSpace.parentID;
+//                    children.get(i).lookAhead = workingStateSpace.lookAhead+1;
+//                    stateSpaceGenerationFringe.add(children.get(i));
+//                    allStateSpaceHolder.add(children.get(i));
+//                }
+//                
+//                
+//            }
+//            
+//            if(workingStateSpace.lookAhead%2 == 1){
+//                //Based off Our Initial Move, Let's Generate Children on Where the Opponent Will Make His Move
+//                workingStateSpace.generateChildrenStateSpaces(this.opponentsMark);
+//                List<BoardStateSpace> children = new ArrayList<BoardStateSpace>();
+//                children = workingStateSpace.children;
+//                for(int i = 0; i < children.size(); i++) {
+//                    children.get(i).nodeID = ++nodeID;
+//                    workingStateSpace.generateChildrenStateSpaces(this.myMark);
+//                    children.get(i).parentID = workingStateSpace.parentID;
+//                    children.get(i).lookAhead = workingStateSpace.lookAhead+1;
+//                    stateSpaceGenerationFringe.add(children.get(i));
+//                    allStateSpaceHolder.add(children.get(i));
+//                }            
+//            }
+//            
+//
+//            
+//            System.out.println("At Level " + workingStateSpace.lookAhead + ", We have a total of: " + stateSpaceGenerationFringe.size() + " children.");
+//        }
+//                
+//        //Now, We Should be Left with a Fringe that Contains All StateSpaces with Their information in them - allStateSpaceHolder 
+//        //We Will Use This to Determine Which StateSpace We Want!
+//        //BoardStateSpace bestMove = miniMax(allStateSpaceHolder);
+//        
+//        return StartingStateSpace;
+//    }   
     
 //    
 //    public BoardStateSpace miniMax(List<BoardStateSpace> fringe){
