@@ -3,12 +3,14 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Mike/Desktop/TicTacToe/TicTacToeGame/src/ai/homework4/FXMLDocumentController.java</file>
-            <file>file:/C:/Users/Mike/Desktop/TicTacToe/TicTacToeGame/src/ai/homework4/Tile.java</file>
-            <file>file:/C:/Users/Mike/Desktop/TicTacToe/TicTacToeGame/src/ai/homework4/AIHomework4.java</file>
-            <file>file:/C:/Users/Mike/Desktop/TicTacToe/TicTacToeGame/src/ai/homework4/BoardStateSpace.java</file>
-            <file>file:/C:/Users/Mike/Desktop/TicTacToe/TicTacToeGame/src/ai/homework4/FXMLDocument.fxml</file>
-            <file>file:/C:/Users/Mike/Desktop/TicTacToe/TicTacToeGame/src/ai/homework4/BoardUpdater.java</file>
+            <file>file:/C:/Users/Mike/Downloads/TicTacToeGame-master%202%202/TicTacToeGame-master%202%202/src/tictactoerevamped/TicTacToeRevamped.java</file>
+            <file>file:/C:/Users/Mike/Downloads/TicTacToeGame-master%202%202/TicTacToeGame-master%202%202/src/tictactoerevamped/BoardStateSpace.java</file>
+            <file>file:/C:/Users/Mike/Downloads/TicTacToeGame-master%202%202/TicTacToeGame-master%202%202/src/tictactoerevamped/PlayerAdvanced.java</file>
+            <file>file:/C:/Users/Mike/Downloads/TicTacToeGame-master%202%202/TicTacToeGame-master%202%202/src/tictactoerevamped/BoardProcessor.java</file>
+            <file>file:/C:/Users/Mike/Downloads/TicTacToeGame-master%202%202/TicTacToeGame-master%202%202/src/tictactoerevamped/PlayerHuman.java</file>
+            <file>file:/C:/Users/Mike/Downloads/TicTacToeGame-master%202%202/TicTacToeGame-master%202%202/src/tictactoerevamped/PlayerBeginner.java</file>
+            <file>file:/C:/Users/Mike/Downloads/TicTacToeGame-master%202%202/TicTacToeGame-master%202%202/src/tictactoerevamped/PlayerMaster.java</file>
+            <file>file:/C:/Users/Mike/Downloads/TicTacToeGame-master%202%202/TicTacToeGame-master%202%202/src/tictactoerevamped/FXMLDocumentController.java</file>
         </group>
     </open-files>
 </project-private>

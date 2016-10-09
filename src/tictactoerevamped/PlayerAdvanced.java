@@ -7,6 +7,7 @@ package tictactoerevamped;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  *
@@ -17,6 +18,7 @@ public class PlayerAdvanced {
     String opponentsMark;
     BoardProcessor boardProcessor = new BoardProcessor();
     
+    //Contructor Sets the AI's Mark
     public PlayerAdvanced(String myMark){
         this.myMark = myMark;
         if(this.myMark.equals("X")){this.opponentsMark = "O";}
@@ -24,7 +26,6 @@ public class PlayerAdvanced {
         
     }
   
-    
     public BoardStateSpace doMove(BoardStateSpace originalStateSpace){
         System.out.println("Advanced Move");
         
@@ -39,24 +40,22 @@ public class PlayerAdvanced {
         workingChildrenStateSpace.cloneStateSpace(workingStateSpace);
         
         if(this.myMark.equals("X")){
-            //Check
-            Tile tileCheck1 = new Tile();
-            Tile tileCheck2 = new Tile();
-            tileCheck1 = boardProcessor.checkPlayerXPotentialWin(workingStateSpace);
-            tileCheck2 = boardProcessor.checkPlayerOPotentialWin(workingStateSpace);
+            //Check our Cases
+            Tile tileCheck1 = boardProcessor.checkPlayerXPotentialWin(workingStateSpace);
+            Tile tileCheck2 = boardProcessor.checkPlayerOPotentialWin(workingStateSpace);
             
             if (tileCheck1 != null){
                 workingChildrenStateSpace.board[tileCheck1.row][tileCheck1.column].setTileMark(this.myMark);           
                 return workingChildrenStateSpace;
             }
             else if(tileCheck2 != null){
-                workingChildrenStateSpace.board[tileCheck1.row][tileCheck1.column].setTileMark(this.myMark);  
+                workingChildrenStateSpace.board[tileCheck2.row][tileCheck2.column].setTileMark(this.myMark);  
                 return workingChildrenStateSpace;
             }
         
         }
         else{
-            //Check
+            //Check our Cases
             Tile tileCheck1 = new Tile();
             Tile tileCheck2 = new Tile();
             tileCheck1 = boardProcessor.checkPlayerOPotentialWin(workingStateSpace);
@@ -79,6 +78,8 @@ public class PlayerAdvanced {
         List<BoardStateSpace> children = new ArrayList<BoardStateSpace>();
         List<BoardStateSpace> children2ndMove = new ArrayList<BoardStateSpace>();
         List<BoardStateSpace> chosenMoves = new ArrayList<BoardStateSpace>();
+        int childNumA;
+        
         
         children = workingChildrenStateSpace.children;
         System.out.println("Number of Children is: " + children.size());
@@ -87,6 +88,7 @@ public class PlayerAdvanced {
               //Generate 3rd Gen
               children.get(i).generateChildrenStateSpaces(this.opponentsMark);
               children2ndMove = children.get(i).children;
+              //childNumA = children2ndMove;
               
               //Choose Worst Move of the Children for it's parent.
               chosenMoves.add(min(children2ndMove, this.myMark));
@@ -101,206 +103,104 @@ public class PlayerAdvanced {
     }
     
     public BoardStateSpace min(List<BoardStateSpace> children, String playerMark){
-      BoardStateSpace minChoice = new BoardStateSpace();
-      minChoice = children.get(0);
-      for(int i = 0; i < children.size(); i++){
-          if(playerMark.equals("O")){
-              if(boardProcessor.countPlayerXPotentialWin(minChoice) > boardProcessor.countPlayerXPotentialWin(children.get(i))){
-                      minChoice = children.get(i);
-              }
-          }
-          else{
-              if(boardProcessor.countPlayerOPotentialWin(minChoice) > boardProcessor.countPlayerOPotentialWin(children.get(i))){
-                      minChoice = children.get(i);
-              }
-          }   
-      }
-      return minChoice;    
-    }
-    
-    public BoardStateSpace max(List<BoardStateSpace> children, String playerMark){
-        BoardStateSpace minChoice = new BoardStateSpace();
+        List<BoardStateSpace> randomBag = new ArrayList<BoardStateSpace>();
+        BoardStateSpace minChoice;
+
+        //Set First one to Default
         minChoice = children.get(0);
+
+        //Go Through All Children, get the Min Potentials
         for(int i = 0; i < children.size(); i++){
             if(playerMark.equals("O")){
-                if(boardProcessor.countPlayerOPotentialWin(minChoice) < boardProcessor.countPlayerOPotentialWin(children.get(i))){
+                if(boardProcessor.countPlayerXPotentialWin(minChoice) > boardProcessor.countPlayerXPotentialWin(children.get(i))){
                         minChoice = children.get(i);
                 }
             }
             else{
-                if(boardProcessor.countPlayerXPotentialWin(minChoice) < boardProcessor.countPlayerXPotentialWin(children.get(i))){
+                if(boardProcessor.countPlayerOPotentialWin(minChoice) > boardProcessor.countPlayerOPotentialWin(children.get(i))){
                         minChoice = children.get(i);
                 }
             }   
         }
-        return minChoice;   
+      
+        //Now That we Have Node with Max Value, Let's Research The Nodes matching that Value and Make a Random Bag!
+        //Go Through All Children, get the Max Potentials
+        for(int i = 0; i < children.size(); i++){
+            
+            if(playerMark.equals("O")){
+                if(boardProcessor.countPlayerOPotentialWin(minChoice) == boardProcessor.countPlayerOPotentialWin(children.get(i))){
+                        randomBag.add(children.get(i));
+                }
+            }
+            
+            else{
+                if(boardProcessor.countPlayerXPotentialWin(minChoice) == boardProcessor.countPlayerXPotentialWin(children.get(i))){
+                        randomBag.add(children.get(i));
+                }
+            }   
+        }
+        
+        //If we Only Have one in Our Bag, Return it...
+        if(randomBag.size() == 1){
+            return randomBag.get(0);
+        }
+
+        //Otherwise, Choose a Random Value!
+        Random rand = new Random();
+        return randomBag.get(rand.nextInt(randomBag.size()));
+        
     }
     
-    
-//    public BoardStateSpace doMove(BoardStateSpace StartingStateSpace){
-//        
-//        
-//        BoardStateSpace parentStateSpace = new BoardStateSpace();
-//        parentStateSpace.cloneStateSpace(StartingStateSpace);
-//        
-//        //We will only be looking two steps ahead!
-//        int lookAheadCounter;
-//        //Create a Fringe to Generate all StateSpaces
-//        List<BoardStateSpace> stateSpaceGenerationFringe = new ArrayList<BoardStateSpace>(); 
-//        //Create a Fringe To Hold all StateSpaces... We Will Use This to Find Mins/Maxes
-//        List<BoardStateSpace> allStateSpaceHolder = new ArrayList<BoardStateSpace>(); 
-//       
-//        int parentID = -1;
-//        int nodeID = 0;
-//        int lookAhead = 0;
-//        
-//        parentStateSpace.parentID = parentID;
-//        parentStateSpace.nodeID = nodeID;
-//        parentStateSpace.lookAhead = lookAhead;
-//                
-//        //Add Our Beginning Node to Fringes
-//        stateSpaceGenerationFringe.add(parentStateSpace);
-//        allStateSpaceHolder.add(parentStateSpace);
-//        
-//        //While We have Something in our Fringe...
-//        while(!stateSpaceGenerationFringe.isEmpty()){
-//            
-//            //Get First Thing in Fringe
-//            BoardStateSpace workingStateSpace = stateSpaceGenerationFringe.get(0);
-//            //Remove it From Fringe after we Get it
-//            stateSpaceGenerationFringe.remove(0);
-//            
-//            if(workingStateSpace.lookAhead > 1){break;}
-//            
-//            //Generate Children Based off this Fringe
-//            if(workingStateSpace.lookAhead%2 == 0){
-//                //Generate Children StateSpaces where We can Make Our Move
-//                workingStateSpace.generateChildrenStateSpaces(this.myMark);
-//                List<BoardStateSpace> children = new ArrayList<BoardStateSpace>();
-//                children = workingStateSpace.children;
-//                for(int i = 0; i < children.size(); i++) {
-//                    children.get(i).generateHValue(this.myMark);
-//                    children.get(i).nodeID = ++nodeID;
-//                    children.get(i).parentID = workingStateSpace.parentID;
-//                    children.get(i).lookAhead = workingStateSpace.lookAhead+1;
-//                    stateSpaceGenerationFringe.add(children.get(i));
-//                    allStateSpaceHolder.add(children.get(i));
-//                }
-//                
-//                
-//            }
-//            
-//            if(workingStateSpace.lookAhead%2 == 1){
-//                //Based off Our Initial Move, Let's Generate Children on Where the Opponent Will Make His Move
-//                workingStateSpace.generateChildrenStateSpaces(this.opponentsMark);
-//                List<BoardStateSpace> children = new ArrayList<BoardStateSpace>();
-//                children = workingStateSpace.children;
-//                for(int i = 0; i < children.size(); i++) {
-//                    children.get(i).nodeID = ++nodeID;
-//                    workingStateSpace.generateChildrenStateSpaces(this.myMark);
-//                    children.get(i).parentID = workingStateSpace.parentID;
-//                    children.get(i).lookAhead = workingStateSpace.lookAhead+1;
-//                    stateSpaceGenerationFringe.add(children.get(i));
-//                    allStateSpaceHolder.add(children.get(i));
-//                }            
-//            }
-//            
-//
-//            
-//            System.out.println("At Level " + workingStateSpace.lookAhead + ", We have a total of: " + stateSpaceGenerationFringe.size() + " children.");
-//        }
-//                
-//        //Now, We Should be Left with a Fringe that Contains All StateSpaces with Their information in them - allStateSpaceHolder 
-//        //We Will Use This to Determine Which StateSpace We Want!
-//        //BoardStateSpace bestMove = miniMax(allStateSpaceHolder);
-//        
-//        return StartingStateSpace;
-//    }   
-    
-//    
-//    public BoardStateSpace miniMax(List<BoardStateSpace> fringe){
-//        System.out.println("In the Min Max");
-//        int lookAheadCounter = 0;
-//        BoardStateSpace bestChoice;
-//        
-//        while(lookAheadCounter <= 2){
-//            
-//            //Get All Children from Fringe That are of Desired Level
-//            List<BoardStateSpace> lookAheadChildren = new ArrayList<BoardStateSpace>();
-//            for(int i = 0; i < fringe.size(); i++){
-//                if(fringe.get(i).lookAhead == lookAheadCounter){
-//                        lookAheadChildren.add(fringe.get(i));
-//                        fringe.remove(i);
-//                }
-//             }
-//
-//            //While There is Still Children to Process at This Level
-//            while(!lookAheadChildren.isEmpty()){
-//
-//                 //Create Group of Children Node of Same Parent, Starting with First in Queue
-//                 List<BoardStateSpace> lookAheadChildrenGroup = new ArrayList<BoardStateSpace>();
-//                 lookAheadChildrenGroup.add(lookAheadChildren.get(0));
-//                 lookAheadChildren.remove(0);
-//
-//                 //Find all Node with Same Parent and add them to Group.
-//                 for(int j = 0; j < lookAheadChildren.size(); j++){
-//                    if(lookAheadChildrenGroup.get(0).parentID == lookAheadChildren.get(j).parentID){
-//                            lookAheadChildrenGroup.add(lookAheadChildren.get(j));
-//                            lookAheadChildren.remove(j);
-//                    }
-//                 }
-//
-//                 //Now We have a group of Children With the Same Parent
-//                 //Find Min/Max, This is our Deepest Case, as Such we need to Generate the Values for them as well!
-//                 if(lookAheadChildrenGroup.get(0).lookAhead%2 == 0){
-//                    BoardStateSpace minChoice = lookAheadChildrenGroup.get(0);
-//                    for(int z = 0; z < lookAheadChildrenGroup.size(); z++){
-//                        //If I'm O's, Search Through Board for Potential Winning O's
-//                        if(minChoice.hValue > lookAheadChildrenGroup.get(z).hValue){
-//                            minChoice = lookAheadChildrenGroup.get(z);
-//                        }
-//                    }
-//                    
-//
-//                    //Set the Groups Paren's Value to The Biggest Number!
-//                    maxChoice.parent.potentialValue = maxChoice.potentialValue;
-//                 }
-//                 
-//                //If 1, It's the Opponents Move, we should find the Min Value of Potential Wins we can get! 
-//                if(lookAheadChildrenGroup.get(0).lookAhead == 1){
-//                 
-//                 else{
-//                         BoardStateSpace maxChoice = lookAheadChildrenGroup.get(0);
-//                         for(int z = 0; z < lookAheadChildrenGroup.size(); z++){
-//                             if(playerMark.equals("X")){
-//                                 if(boardUpdater.countPlayer1PotentialWin(maxChoice) <= boardUpdater.countPlayer1PotentialWin(lookAheadChildrenGroup.get(z))){
-//                                         maxChoice = lookAheadChildrenGroup.get(z);
-//                                 }
-//                             }
-//                             else{
-//                                 if(boardUpdater.countPlayer2PotentialWin(maxChoice) <= boardUpdater.countPlayer2PotentialWin(lookAheadChildrenGroup.get(z))){
-//                                         maxChoice = lookAheadChildrenGroup.get(z);
-//                                 }
-//                             }
-//
-//                         }
-//
-//                         maxChoice.parent.potentialValue = maxChoice.potentialValue;
-//                         if(lookAheadCounter==1){
-//                             System.out.println("**********playerMark IS: " + playerMark);
-//
-//                            return maxChoice;
-//                         }
-//                 }
-//        }
-//        lookAheadCounter--;
-//        
-//    }
-//        return null;
-//    }
-//
-
-
+    public BoardStateSpace max(List<BoardStateSpace> children, String playerMark){
+        List<BoardStateSpace> randomBag = new ArrayList<BoardStateSpace>();
+        BoardStateSpace maxChoice;
+        
+        //Set First one as Default
+        maxChoice = children.get(0);
+        
+        //Go Through All Children, get the Max Potentials
+        for(int i = 0; i < children.size(); i++){
+            
+            if(playerMark.equals("O")){
+                if(boardProcessor.countPlayerOPotentialWin(maxChoice) < boardProcessor.countPlayerOPotentialWin(children.get(i))){
+                        maxChoice = children.get(i);
+                }
+            }
+            
+            else{
+                if(boardProcessor.countPlayerXPotentialWin(maxChoice) < boardProcessor.countPlayerXPotentialWin(children.get(i))){
+                        maxChoice = children.get(i);
+                }
+            }   
+        }
+        
+        //Now That we Have Node with Max Value, Let's Research The Nodes matching that Value and Make a Random Bag!
+        //Go Through All Children, get the Max Potentials
+        for(int i = 0; i < children.size(); i++){
+            
+            if(playerMark.equals("O")){
+                if(boardProcessor.countPlayerOPotentialWin(maxChoice) == boardProcessor.countPlayerOPotentialWin(children.get(i))){
+                        randomBag.add(children.get(i));
+                }
+            }
+            
+            else{
+                if(boardProcessor.countPlayerXPotentialWin(maxChoice) == boardProcessor.countPlayerXPotentialWin(children.get(i))){
+                        randomBag.add(children.get(i));
+                }
+            }   
+        }
+        
+        //If we Only Have one in Our Bag, Return it...
+        if(randomBag.size() == 1){
+            return randomBag.get(0);
+        }
+        
+        //Otherwise, Choose a Random Value!
+        Random rand = new Random();
+        return randomBag.get(rand.nextInt(randomBag.size()));
+       
+    }
 
 }
 

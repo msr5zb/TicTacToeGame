@@ -18,6 +18,7 @@ public class PlayerBeginner {
     String myMark;
     String opponentsMark;
     
+    //Contructor Sets the AI's Mark
     public PlayerBeginner(String myMark){
         this.myMark = myMark;
         if(this.myMark.equals("X")){this.opponentsMark = "O";}
@@ -25,50 +26,47 @@ public class PlayerBeginner {
         
     }
     
+    //The AI of Beginner
     public BoardStateSpace doMove(BoardStateSpace startingStateSpace){
-        System.out.println("Beginner's Move");
+        System.out.println("Beginner Move");
+        
+        //Copy the Original StateSpace
         BoardStateSpace workingStateSpace = new BoardStateSpace();
         workingStateSpace.cloneStateSpace(startingStateSpace);
         
         BoardProcessor processBoard = new BoardProcessor();
         
         if(this.myMark.equals("X")){
-            //Check
-            Tile tileCheck1 = new Tile();
-            Tile tileCheck2 = new Tile();
-            Tile tileCheck3 = new Tile();
-            tileCheck1 = processBoard.checkPlayerXPotentialWin(workingStateSpace);
-            tileCheck2 = processBoard.checkPlayerOPotentialWin(workingStateSpace);
-            tileCheck3 = processBoard.findNextEmpty(workingStateSpace);
+            //Check Our Cases
+            Tile tileCheck1 = processBoard.checkPlayerXPotentialWin(workingStateSpace);
+            Tile tileCheck2 = processBoard.checkPlayerOPotentialWin(workingStateSpace);
+            Tile tileCheck3 = processBoard.findNextEmpty(workingStateSpace);
             
             if (tileCheck1 != null){tileCheck1.setTileMark("X");}
             else if(tileCheck2 != null){tileCheck2.setTileMark("X");}
             else if(tileCheck3 != null){tileCheck3.setTileMark("X");}
-            else{System.out.println("CATS GAME! LOL");}
+            else{System.out.println("Cats Game");}
         
         }
         else{
-            //Check
-            Tile tileCheck1 = new Tile();
-            Tile tileCheck2 = new Tile();
-            Tile tileCheck3 = new Tile();
-            tileCheck1 = processBoard.checkPlayerOPotentialWin(workingStateSpace);
-            tileCheck2 = processBoard.checkPlayerXPotentialWin(workingStateSpace);
-            tileCheck3 = processBoard.findNextEmpty(workingStateSpace);
+            //Check Our Cases
+            Tile tileCheck1 = processBoard.checkPlayerOPotentialWin(workingStateSpace);
+            Tile tileCheck2 = processBoard.checkPlayerXPotentialWin(workingStateSpace);
+            Tile tileCheck3 = processBoard.findNextEmpty(workingStateSpace);
             
             if (tileCheck1 != null){tileCheck1.setTileMark("O");}
             else if(tileCheck2 != null){tileCheck2.setTileMark("O");}
             else if(tileCheck3 != null){tileCheck3.setTileMark("O");}
-            else{System.out.println("CATS GAME! LOL");}
+            else{System.out.println("Cats Game");}
         }
         
         //workingStateSpace.printBoard();
         return workingStateSpace;
-        
-        
-        
+
     }
     
+    //We Had to Add Another Function to for Beginner's AI Behave Friendly with our GUI.
+    //The Logic's the Same, just with a slightly different Approach.
     public void doMoveGUIFriendly(GridPane gridBoard, BoardStateSpace workingStateSpace, String playerMark){
         System.out.println("AI's Move");
         
@@ -77,9 +75,8 @@ public class PlayerBeginner {
         Tile foundTile;
         ImageView mark = new ImageView();
         
-        
         if(playerMark.equals("X")){
-            //Check
+            //Check our Cases
             Tile tileCheck1 = processBoard.checkPlayerXPotentialWin(workingStateSpace);
             Tile tileCheck2 = processBoard.checkPlayerOPotentialWin(workingStateSpace);
             Tile tileCheck3 = processBoard.findNextEmpty(workingStateSpace);
@@ -106,7 +103,7 @@ public class PlayerBeginner {
             //workingStateSpace.setPlayer1Turn(false);
         }
         else{
-            //Check
+            //Check our Cases
             Tile tileCheck1 = processBoard.checkPlayerOPotentialWin(workingStateSpace);
             Tile tileCheck2 = processBoard.checkPlayerXPotentialWin(workingStateSpace);
             Tile tileCheck3 = processBoard.findNextEmpty(workingStateSpace);
@@ -130,9 +127,6 @@ public class PlayerBeginner {
             mark.setImage(new Image("O.png"));
             mark.setStyle("-fx-background-color: whitesmoke; -fx-padding: 2;");
         }
-        
-        
-        
      
         if(foundTile != null){
             GridPane.setConstraints(mark, foundTile.column, foundTile.row);

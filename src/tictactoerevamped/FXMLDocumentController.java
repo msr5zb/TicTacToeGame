@@ -7,8 +7,6 @@ package tictactoerevamped;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -21,6 +19,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.text.Font;
 
 /**
  *
@@ -28,13 +27,11 @@ import javafx.scene.layout.GridPane;
  */
 public class FXMLDocumentController implements Initializable {
     
-    private Label label;
+    //Labels and Stuffs for the Display!
     @FXML
     private AnchorPane boardPane;
     @FXML
     private GridPane board;
-    @FXML
-    private Button resetButton;
     @FXML
     private Button beginnerVsMe;
     @FXML
@@ -45,167 +42,198 @@ public class FXMLDocumentController implements Initializable {
     private Button advancedVsMaster;
     @FXML
     private Button masterVsAdvanced;
+    @FXML
+    private Label player1Label;
+    @FXML
+    private Label player2Label;
     
+    //The Main StateSpace
     BoardStateSpace currentStateSpace;
     BoardProcessor processBoard = new BoardProcessor();
-         
-    boolean aiTurn = true;
-         boolean humanTurn = false;   
+    boolean gameOver = false;
     
-         public boolean getAiTurn(){return this.aiTurn;}
-         public void setAiTurn(boolean value){this.aiTurn = value;}
-         public boolean getHumanTurn(){return this.humanTurn;}
-         public void setHumanTurn(boolean value){this.humanTurn = value;}
+    //Timings~
+    long startTime;
+    long endTime;
+    long duration;
+        
+    //Used for Beginner vs AI
+    boolean aiTurn = true;
+    boolean humanTurn = false; 
+    @FXML
+    private Font x1;
+    @FXML
+    private Font x2;
+    @FXML
+    private Label winnerLabel;
          
-         
-    private void handleButtonAction(ActionEvent event) {
-        System.out.println("You clicked me!");
-        label.setText("Hello World!");
-    }
+    //Used for Beginner vs AI.
+    public boolean getAiTurn(){return this.aiTurn;}
+    public void setAiTurn(boolean value){this.aiTurn = value;}
+    public boolean getHumanTurn(){return this.humanTurn;}
+    public void setHumanTurn(boolean value){this.humanTurn = value;}
+      
+    //Setting and Getting Main StateSpace
+    private void setCurrentStateSpace(BoardStateSpace newStateSpace){this.currentStateSpace = newStateSpace;}
+    private BoardStateSpace getCurrentStateSpace(){return this.currentStateSpace;}
+    
+     
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        //On Start, Create the Main StateSpace and Set it.
         BoardStateSpace workingStateSpace = new BoardStateSpace();
-        setCurrentStateSpace(workingStateSpace);
-                
+        setCurrentStateSpace(workingStateSpace);       
     }    
 
     @FXML
-    private void resetButtonClick(MouseEvent event) {
-        
-    }
-
-    @FXML
     private void beginnerVsMeClick(MouseEvent event) {
+        //Set Things Up
         System.out.println("Setting Beginner vs. Me!");
+        player1Label.setText("Beginner - X's");
+        player2Label.setText("Me - O's");
+        getCurrentStateSpace().resetBoard();
+        getCurrentStateSpace().updateDisplay(board);
         
-        for(int i= 0; i < 4; i++){
-            for(int j = 0; j < 4; j++){
-                getCurrentStateSpace().board[i][j].setTileMark("empty");
-            }
-        }
-        
+        //Make Players
         PlayerBeginner playerBeginner = new PlayerBeginner("X");
+        
+        //UI Board Clear
         board.getChildren().clear();
         board.setStyle("-fx-background-color: blue; -fx-padding: 2;");
         for(int i = 0; i < 4; i++){
             for(int j = 0; j < 4; j++){
                 ImageView mark = new ImageView(new Image("empty.png"));
-                                        
+                long startTime;                        
                 //Add in the current working Room, note parameters are (object, col, row);
                 mark.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
 
                     @Override
                     public void handle(MouseEvent event) {
+                        
                         int row = GridPane.getRowIndex((Node)event.getSource());
                         int column = GridPane.getColumnIndex((Node)event.getSource());
                         //Check if it's the Player's Turn...
                         if(getHumanTurn()){
-                            
+                           
                            //Check if Mark Available to Play
                            if(getCurrentStateSpace().board[row][column].tileMark.equals("empty")){
-                                System.out.println("Adding...");             
 
                                 //Update Board StateSpace
                                 getCurrentStateSpace().board[row][column].setTileMark("O");
-
+                                
                                 //Update GUI - Add Image                                              
                                 ImageView workingImage = (ImageView)event.getSource();   
                                 workingImage.setImage(new Image("O.png"));
-
-
+                                
                                 //Check if Win
                                 if(processBoard.checkIfWinner(getCurrentStateSpace())){
-                                    System.out.println("WINNER");
+                                    System.out.println("Winner is: Human!");
+                                    winnerLabel.setText("Winner is: Human!");
                                     //End Game 
                                     setAiTurn(false);
                                     setHumanTurn(false);
                                 }
                                 else{
                                     //Do Opponent's Move
+                                    long specialStartTime = System.nanoTime();
                                     playerBeginner.doMoveGUIFriendly(board, getCurrentStateSpace(), "X");
+                                    long specialEndTime = System.nanoTime();
+                                    long specialDuration = (specialEndTime - specialStartTime); 
+                                    System.out.println("Move ran in: " + specialDuration/1000000);
+                                    
                                     setHumanTurn(true);
                                     if(processBoard.checkIfWinner(getCurrentStateSpace())){
-                                        System.out.println("WINNER");
+                                        System.out.println("Winner is: Beginner!");
+                                        winnerLabel.setText("Winner is: Beginner!");
                                         //End Game 
                                         setAiTurn(false);
                                         setHumanTurn(false);
-                                        
                                     }
-                                    
-                                    
                                 }
-
                            }
-                           else{
-                               System.out.println("You Cannot Place a Mark Here!");
-                           }           
+                           else{}           
                         }
                         else{
-                            System.out.println("You Must Wait Your Turn!");
-                            
+                            System.out.println("Game is Over...!");
                         }
                     }
                 });
                 mark.setStyle("-fx-background-color: whitesmoke; -fx-padding: 2;");
                 GridPane.setConstraints(mark, j, i);
                 board.getChildren().add(mark);
-                
             }
         }   
         //Do Opponent's Move
+        long specialStartTime = System.nanoTime();
         playerBeginner.doMoveGUIFriendly(board, getCurrentStateSpace(), "X");
+        long specialEndTime = System.nanoTime();
+        long specialDuration = (specialEndTime - specialStartTime); 
+        System.out.println("Beginner Move Duration: " + specialDuration/1000000);
+        
         setHumanTurn(true);
         if(processBoard.checkIfWinner(getCurrentStateSpace())){
-            System.out.println("WINNER");
+            System.out.println("Winner is: Beginner!");
+            winnerLabel.setText("Winner is: Beginner!");
             //End Game 
             setAiTurn(false);
             setHumanTurn(false);
 
         }
-        
     }
     
     
 
     @FXML
     private void beginnerVsAdvancedClick(MouseEvent event) {
-        for(int i= 0; i < 4; i++){
-            for(int j = 0; j < 4; j++){
-                getCurrentStateSpace().board[i][j].setTileMark("empty");
-            }
-        }
-                
-        boolean gameOver = false;
+        //Set Things Up
+        System.out.println("Setting Beginner vs. Advanced!");
+        player1Label.setText("Beginner - X's");
+        player2Label.setText("Me - O's");
+        getCurrentStateSpace().resetBoard();
+        getCurrentStateSpace().updateDisplay(board);
+        
+        //Careate Players!
         PlayerBeginner playerBeginner = new PlayerBeginner("X");
         PlayerAdvanced playerAdvanced = new PlayerAdvanced("O");
+        gameOver = false;
         
         while(!gameOver){
-            
-               
-            try {Thread.sleep(200);} catch (InterruptedException ex) {Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);} 
-            //Beginner Does Move
+
+            //Beginner's Move
+            startTime = System.nanoTime();
             setCurrentStateSpace(playerBeginner.doMove(getCurrentStateSpace()));
+            endTime = System.nanoTime();
+            duration = (endTime - startTime); 
+            System.out.println("Beginner Move Duration: " + duration/1000000);
+            
+            //Update Board
             getCurrentStateSpace().updateDisplay(board);
             getCurrentStateSpace().printBoard();
             
             //Check if Won
             if(processBoard.checkIfWinner(getCurrentStateSpace())){
-                System.out.println("WINNER is Beginner!");
+                System.out.println("Winner is: Beginner!");
+                winnerLabel.setText("Winner is: Beginner!");
                 gameOver = true;
                 break;
             }
-            
-            try {Thread.sleep(200);} catch (InterruptedException ex) {Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);}    
-            
+                        
             //Advanced Does Move
+            startTime = System.nanoTime();
             setCurrentStateSpace(playerAdvanced.doMove(getCurrentStateSpace()));
+            endTime = System.nanoTime();
+            duration = (endTime - startTime); 
+            System.out.println("Advanced Move Duration: " + duration/1000000);
+            
+            //Update board
             getCurrentStateSpace().updateDisplay(board);
             getCurrentStateSpace().printBoard();
                
             //Check if Won
             if(processBoard.checkIfWinner(getCurrentStateSpace())){
-                System.out.println("WINNER is Advanced!");
+                System.out.println("Winner is: Advanced!");
+                winnerLabel.setText("Winner is: Advanced!");
                 gameOver = true;
                 break;
             }
@@ -214,42 +242,54 @@ public class FXMLDocumentController implements Initializable {
 
     @FXML
     private void advancedVsBeginnerClick(MouseEvent event) {
-        for(int i= 0; i < 4; i++){
-            for(int j = 0; j < 4; j++){
-                getCurrentStateSpace().board[i][j].setTileMark("empty");
-            }
-        }        
-        
-        
-        
-        boolean gameOver = false;
+        //Set Things Up
+        System.out.println("Setting Advanced vs. Beginner!");
+        player1Label.setText("Beginner - X's");
+        player2Label.setText("Me - O's");
+        getCurrentStateSpace().resetBoard();
+        getCurrentStateSpace().updateDisplay(board);      
+
+        //Create Players!
         PlayerAdvanced playerAdvanced = new PlayerAdvanced("X");
         PlayerBeginner playerBeginner = new PlayerBeginner("O");
-        
+        gameOver = false;
+                
         while(!gameOver){
             
-            
             //Advanced Does Move
+            startTime = System.nanoTime();
             setCurrentStateSpace(playerAdvanced.doMove(getCurrentStateSpace()));
+            endTime = System.nanoTime();
+            duration = (endTime - startTime); 
+            System.out.println("Advanced Move Duration: " + duration/1000000);
+            
+            //Update Board
             getCurrentStateSpace().updateDisplay(board);
             getCurrentStateSpace().printBoard();
                
             //Check if Won
             if(processBoard.checkIfWinner(getCurrentStateSpace())){
-                System.out.println("WINNER is Advanceddd!");
+                System.out.println("Winner is: Advanced!");
+                winnerLabel.setText("Winner is: Advanced!");
                 gameOver = true;
                 break;
             }
             
-            
             //Beginner Does Move
+            startTime = System.nanoTime();
             setCurrentStateSpace(playerBeginner.doMove(getCurrentStateSpace()));
+            endTime = System.nanoTime();
+            duration = (endTime - startTime); 
+            System.out.println("Beginner Move Duration: " + duration/1000000);
+            
+            //Update Board
             getCurrentStateSpace().updateDisplay(board);
             getCurrentStateSpace().printBoard();
             
             //Check if Won
             if(processBoard.checkIfWinner(getCurrentStateSpace())){
-                System.out.println("WINNER is Beginnerrr!");
+                System.out.println("Winner is: Beginner!");
+                winnerLabel.setText("Winner is: Beginner!");
                 gameOver = true;
                 break;
             }
@@ -258,42 +298,55 @@ public class FXMLDocumentController implements Initializable {
 
     @FXML
     private void advancedVsMasterClick(MouseEvent event) {
-        for(int i= 0; i < 4; i++){
-            for(int j = 0; j < 4; j++){
-                getCurrentStateSpace().board[i][j].setTileMark("empty");
-            }
-        }        
-        
-        
-        
-        boolean gameOver = false;
+        //Set Things Up
+        System.out.println("Setting Beginner vs. Advanced!");
+        player1Label.setText("Beginner - X's");
+        player2Label.setText("Me - O's");
+        getCurrentStateSpace().resetBoard();
+        getCurrentStateSpace().updateDisplay(board);   
+
+        //Create Players! 
         PlayerAdvanced playerAdvanced = new PlayerAdvanced("X");
         PlayerMaster playerMaster = new PlayerMaster("O");
+        gameOver = false;
         
         while(!gameOver){
             
-            
             //Advanced Does Move
+            startTime = System.nanoTime();
             setCurrentStateSpace(playerAdvanced.doMove(getCurrentStateSpace()));
+            endTime = System.nanoTime();
+            duration = (endTime - startTime); 
+            System.out.println("Advaned Move Duration: " + duration/1000000);
+            
+            //Update Board
             getCurrentStateSpace().updateDisplay(board);
             getCurrentStateSpace().printBoard();
                
             //Check if Won
             if(processBoard.checkIfWinner(getCurrentStateSpace())){
-                System.out.println("WINNER is Advanceddd!");
+                System.out.println("Winner is: Advanced!");
+                winnerLabel.setText("Winner is: Advanced!");
                 gameOver = true;
                 break;
             }
             
             
             //Master Does Move
+            startTime = System.nanoTime();
             setCurrentStateSpace(playerMaster.doMove(getCurrentStateSpace()));
+            endTime = System.nanoTime();
+            duration = (endTime - startTime); 
+            System.out.println("Master Move Duration: " + duration/1000000);
+            
+            //Update Board
             getCurrentStateSpace().updateDisplay(board);
             getCurrentStateSpace().printBoard();
             
             //Check if Won
             if(processBoard.checkIfWinner(getCurrentStateSpace())){
-                System.out.println("WINNER is Master!");
+                System.out.println("Winner is: Master!");
+                winnerLabel.setText("Winner is: Master!");
                 gameOver = true;
                 break;
             }
@@ -302,60 +355,60 @@ public class FXMLDocumentController implements Initializable {
 
     @FXML
     private void masterVsAdvancedClick(MouseEvent event) {
-        for(int i= 0; i < 4; i++){
-            for(int j = 0; j < 4; j++){
-                getCurrentStateSpace().board[i][j].setTileMark("empty");
-            }
-        }        
+        //Set Things Up
+        System.out.println("Setting Master vs. Advanced!");
+        player1Label.setText("Beginner - X's");
+        player2Label.setText("Me - O's");
+        getCurrentStateSpace().resetBoard();
+        getCurrentStateSpace().updateDisplay(board); 
         
-        
-        
-        boolean gameOver = false;
+        //Create Players! 
         PlayerMaster playerMaster = new PlayerMaster("X");
         PlayerAdvanced playerAdvanced = new PlayerAdvanced("O");
+        gameOver = false;
         
         while(!gameOver){
             
-            
-
-            
-            
             //Master Does Move
+            startTime = System.nanoTime();
             setCurrentStateSpace(playerMaster.doMove(getCurrentStateSpace()));
+            endTime = System.nanoTime();
+            duration = (endTime - startTime); 
+            System.out.println("Master move Duration: " + duration/1000000);
+            
+            //Update Board
             getCurrentStateSpace().updateDisplay(board);
             getCurrentStateSpace().printBoard();
             
             //Check if Won
             if(processBoard.checkIfWinner(getCurrentStateSpace())){
-                System.out.println("WINNER is Master!");
+                System.out.println("Winner is: Master!");
+                winnerLabel.setText("Winner is: Master!");
                 gameOver = true;
                 break;
             }
             
             
             //Advanced Does Move
+            startTime = System.nanoTime();
             setCurrentStateSpace(playerAdvanced.doMove(getCurrentStateSpace()));
+            endTime = System.nanoTime();
+            duration = (endTime - startTime); 
+            System.out.println("Advanced Move Duration: " + duration/1000000);
+            
+            //Update Board
             getCurrentStateSpace().updateDisplay(board);
             getCurrentStateSpace().printBoard();
-               
+            
             //Check if Won
             if(processBoard.checkIfWinner(getCurrentStateSpace())){
-                System.out.println("WINNER is Advanceddd!");
+                System.out.println("Winner is: Advanced!");
+                winnerLabel.setText("Winner is: Advanced!");
                 gameOver = true;
                 break;
             }
         }
         
     }
-    
-    
-    
-    private void setCurrentStateSpace(BoardStateSpace newStateSpace){this.currentStateSpace = newStateSpace;}
-    private BoardStateSpace getCurrentStateSpace(){return this.currentStateSpace;}
-    
-     
- 
-    
-    
     
 }

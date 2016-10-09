@@ -31,7 +31,7 @@ public class BoardStateSpace {
     BoardStateSpace parent;
     List<BoardStateSpace> children = new ArrayList<BoardStateSpace>();
     
-    
+    //Default Constructor, Starts with a Fresh Board!
     public BoardStateSpace(){
         for(int i = 0; i < ROWS; i++){
             for(int j = 0; j < COLUMNS; j++){
@@ -40,6 +40,7 @@ public class BoardStateSpace {
         }
     }
     
+    //Prints out the Board StateSpace
     public void printBoard(){
         for(int i = 0; i < ROWS; i++){
             for(int j = 0; j < COLUMNS; j++){
@@ -49,6 +50,7 @@ public class BoardStateSpace {
         }        
     }
     
+    //Generates Current Board State Space's Children 
     public void generateChildrenStateSpaces(String mark){
         this.children.clear();
         //Potential Children States
@@ -65,6 +67,8 @@ public class BoardStateSpace {
             }
         }
     }
+    
+    //Clones a Board State Space
     public void cloneStateSpace(BoardStateSpace stateSpaceToClone){
         this.nodeID = stateSpaceToClone.nodeID;
         this.parentID = stateSpaceToClone.parentID;
@@ -79,6 +83,7 @@ public class BoardStateSpace {
         this.children = stateSpaceToClone.children;
     }
     
+    //Clones a Board
     public void cloneBoard(Tile[][] boardToClone){
         for(int i = 0; i < ROWS; i++){
             for(int j = 0; j < COLUMNS; j++){
@@ -87,7 +92,9 @@ public class BoardStateSpace {
         }
     }
   
-    public void updateDisplay(GridPane boardDisplayGrid){        
+    //Updates the Display of our Grid using curretn StateSpace
+    public void updateDisplay(GridPane boardDisplayGrid){  
+        
        boardDisplayGrid.getChildren().clear();
        boardDisplayGrid.setStyle("-fx-background-color: blue; -fx-padding: 2;");
         for(int i = 0; i < ROWS; i++){
@@ -102,16 +109,13 @@ public class BoardStateSpace {
            
     }
     
-
-    public void generateHValue(String myMark){
-        //h(n) = [# of open 2-in-a-row for me] - [# of open 2-in-a-row for opponent]
-        BoardProcessor boardProcessor = new BoardProcessor();
-        if(myMark.equals("X")){
-            this.hValue = boardProcessor.countPlayerXPotentialWin(this) - boardProcessor.countPlayerOPotentialWin(this);
+    //Resets the Board!
+    public void resetBoard(){
+        for(int i= 0; i < 4; i++){
+            for(int j = 0; j < 4; j++){
+                this.board[i][j].setTileMark("empty");
+            }
         }
-        else{
-            this.hValue = boardProcessor.countPlayerXPotentialWin(this) - boardProcessor.countPlayerOPotentialWin(this);
-        } 
     }
     
     

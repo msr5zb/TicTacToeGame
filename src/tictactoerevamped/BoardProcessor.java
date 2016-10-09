@@ -10,17 +10,15 @@ package tictactoerevamped;
  * @author Mike
  */
 public class BoardProcessor {
-    
+        //Deafult Constrauctor
         public BoardProcessor(){}
-    
+        
+        //Checks if a Winner Exists in the BoardStateSpace
         public boolean checkIfWinner(BoardStateSpace workingStateSpace){
      
         //Check for three in a row
         for(int row = 0; row < 4; row++){
             for(int col = 0; col < 4; col++){
-
-
-                //Placements to Check
 
                 // Left
                 if(col-2>=0){
@@ -136,7 +134,7 @@ public class BoardProcessor {
         
     }
         
-        
+    //Find Next Available Empty Tile!  
     public Tile findNextEmpty(BoardStateSpace workingStateSpace){
         for(int row = 0; row < 4; row++){
             for(int col = 0; col < 4; col++){
@@ -148,10 +146,10 @@ public class BoardProcessor {
         return null;
     }
     
-   public int countPlayerXPotentialWin(BoardStateSpace workingStateSpace){
+    //Counts Potential Wins for X
+    public int countPlayerXPotentialWin(BoardStateSpace workingStateSpace){
        int counter = 0;
-        //Check for three in a row
-        for(int row = 0; row < 4; row++){
+       for(int row = 0; row < 4; row++){
             for(int col = 0; col < 4; col++){
 
 
@@ -235,12 +233,11 @@ public class BoardProcessor {
         }
         return counter;     
     }
-    
+
+    //Counts Potential Wins for O
     public int countPlayerOPotentialWin(BoardStateSpace workingStateSpace){
         
         int counter = 0;
-        
-        //Check for three in a row
         for(int row = 0; row < 4; row++){
             for(int col = 0; col < 4; col++){
 
@@ -326,13 +323,10 @@ public class BoardProcessor {
         return counter;     
     }    
     
+    //Checks Potential Wins for X
     public Tile checkPlayerXPotentialWin(BoardStateSpace workingStateSpace){
-    //Check for three in a row
         for(int row = 0; row < 4; row++){
             for(int col = 0; col < 4; col++){
-
-
-                //Placements to Check
 
                 //2 Left
                 if(col-2>=0){
@@ -413,14 +407,12 @@ public class BoardProcessor {
         return null;     
     }
     
+    //Checks Potential Wins for O
     public Tile checkPlayerOPotentialWin(BoardStateSpace workingStateSpace){
-    //Check for three in a row
+
         for(int row = 0; row < 4; row++){
             for(int col = 0; col < 4; col++){
-
-
-                //Placements to Check
-
+                
                 //2 Left
                 if(col-2>=0){
                     if(workingStateSpace.board[row][col].tileMark.equals("O") &&     
