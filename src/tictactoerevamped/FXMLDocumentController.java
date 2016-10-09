@@ -100,7 +100,7 @@ public class FXMLDocumentController implements Initializable {
         
         //UI Board Clear
         board.getChildren().clear();
-        board.setStyle("-fx-background-color: blue; -fx-padding: 2;");
+        board.setStyle("-fx-background-color: gray; -fx-padding: 2;");
         for(int i = 0; i < 4; i++){
             for(int j = 0; j < 4; j++){
                 ImageView mark = new ImageView(new Image("empty.png"));

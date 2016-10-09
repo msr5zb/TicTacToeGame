@@ -96,7 +96,7 @@ public class BoardStateSpace {
     public void updateDisplay(GridPane boardDisplayGrid){  
         
        boardDisplayGrid.getChildren().clear();
-       boardDisplayGrid.setStyle("-fx-background-color: blue; -fx-padding: 2;");
+       boardDisplayGrid.setStyle("-fx-background-color: gray; -fx-padding: 2;");
         for(int i = 0; i < ROWS; i++){
             for(int j = 0; j < COLUMNS; j++){
                 ImageView mark = new ImageView();
