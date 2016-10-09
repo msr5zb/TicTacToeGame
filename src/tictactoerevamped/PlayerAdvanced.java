@@ -33,12 +33,14 @@ public class PlayerAdvanced {
         BoardStateSpace workingStateSpace = new BoardStateSpace();
         workingStateSpace.cloneStateSpace(originalStateSpace);
         
-        
+        //For Future Children Manipulation
         BoardStateSpace workingChildrenStateSpace = new BoardStateSpace();
-        BoardStateSpace chosenMove1st = new BoardStateSpace();
-        int chosenLocation = -1;
         workingChildrenStateSpace.cloneStateSpace(workingStateSpace);
         
+        //Chosen Move
+        BoardStateSpace chosenMove1st;
+        
+        //Initial Checks!
         if(this.myMark.equals("X")){
             //Check our Cases
             Tile tileCheck1 = boardProcessor.checkPlayerXPotentialWin(workingStateSpace);
@@ -70,36 +72,34 @@ public class PlayerAdvanced {
             }
         }        
         
+        //Chosen locations
+        int chosenLocation = -1;
         
         
-        
-        
+        //Children Sets
         workingChildrenStateSpace.generateChildrenStateSpaces(this.myMark);
         List<BoardStateSpace> children = new ArrayList<BoardStateSpace>();
+        //Childrens' MoveSets
         List<BoardStateSpace> children2ndMove = new ArrayList<BoardStateSpace>();
+        //Childrens' Chosen Moves
         List<BoardStateSpace> chosenMoves = new ArrayList<BoardStateSpace>();
-        int childNumA;
         
-        
+        //Generate 1st Gen Children
         children = workingChildrenStateSpace.children;
         System.out.println("Number of Children is: " + children.size());
+        for(int i = 0; i < children.size(); i++) {
+            //Generate 2nd Gen
+            children.get(i).generateChildrenStateSpaces(this.opponentsMark);
+            children2ndMove = children.get(i).children;
+            chosenMoves.add(min(children2ndMove, this.myMark));
+            children2ndMove.clear();
+        }
         
-          for(int i = 0; i < children.size(); i++) {
-              //Generate 3rd Gen
-              children.get(i).generateChildrenStateSpaces(this.opponentsMark);
-              children2ndMove = children.get(i).children;
-              //childNumA = children2ndMove;
-              
-              //Choose Worst Move of the Children for it's parent.
-              chosenMoves.add(min(children2ndMove, this.myMark));
-              children2ndMove.clear();
-          }
-          chosenMove1st = max(chosenMoves, this.myMark);
-          chosenLocation = chosenMoves.indexOf(chosenMove1st);
-          System.out.println("ChosenLocation is :" + chosenLocation);
-          workingStateSpace = children.get(chosenLocation);
-          
-          return workingStateSpace;
+        chosenMove1st = max(chosenMoves, this.myMark);
+        chosenLocation = chosenMoves.indexOf(chosenMove1st);
+        workingStateSpace = children.get(chosenLocation);
+
+        return workingStateSpace;
     }
     
     public BoardStateSpace min(List<BoardStateSpace> children, String playerMark){
