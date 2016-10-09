@@ -87,7 +87,7 @@ public class PlayerMaster {
         List<BoardStateSpace> children3rdMove = new ArrayList<BoardStateSpace>();
         List<BoardStateSpace> children4thMove = new ArrayList<BoardStateSpace>();
         
-        //Childrens' Chose Moves
+        //Childrens' Chosen Moves
         List<BoardStateSpace> chosenMoves = new ArrayList<BoardStateSpace>();
         List<BoardStateSpace> chosenMoves2 = new ArrayList<BoardStateSpace>();
         List<BoardStateSpace> chosenMoves3 = new ArrayList<BoardStateSpace>();

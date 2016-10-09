@@ -23,7 +23,6 @@ public class PlayerAdvanced {
         this.myMark = myMark;
         if(this.myMark.equals("X")){this.opponentsMark = "O";}
         else{this.opponentsMark = "X";}
-        
     }
   
     public BoardStateSpace doMove(BoardStateSpace originalStateSpace){
