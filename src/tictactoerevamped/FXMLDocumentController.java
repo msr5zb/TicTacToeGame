@@ -189,7 +189,7 @@ public class FXMLDocumentController implements Initializable {
         //Set Things Up
         System.out.println("Setting Beginner vs. Advanced!");
         player1Label.setText("Beginner - X's");
-        player2Label.setText("Me - O's");
+        player2Label.setText("Advanced - O's");
         getCurrentStateSpace().resetBoard();
         getCurrentStateSpace().updateDisplay(board);
         
@@ -244,8 +244,8 @@ public class FXMLDocumentController implements Initializable {
     private void advancedVsBeginnerClick(MouseEvent event) {
         //Set Things Up
         System.out.println("Setting Advanced vs. Beginner!");
-        player1Label.setText("Beginner - X's");
-        player2Label.setText("Me - O's");
+        player1Label.setText("Advanced - X's");
+        player2Label.setText("Beginner - O's");
         getCurrentStateSpace().resetBoard();
         getCurrentStateSpace().updateDisplay(board);      
 
@@ -299,9 +299,9 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private void advancedVsMasterClick(MouseEvent event) {
         //Set Things Up
-        System.out.println("Setting Beginner vs. Advanced!");
-        player1Label.setText("Beginner - X's");
-        player2Label.setText("Me - O's");
+        System.out.println("Setting Advanced vs. Master!");
+        player1Label.setText("Advanced - X's");
+        player2Label.setText("Master - O's");
         getCurrentStateSpace().resetBoard();
         getCurrentStateSpace().updateDisplay(board);   
 
@@ -357,8 +357,8 @@ public class FXMLDocumentController implements Initializable {
     private void masterVsAdvancedClick(MouseEvent event) {
         //Set Things Up
         System.out.println("Setting Master vs. Advanced!");
-        player1Label.setText("Beginner - X's");
-        player2Label.setText("Me - O's");
+        player1Label.setText("Master - X's");
+        player2Label.setText("Advanced - O's");
         getCurrentStateSpace().resetBoard();
         getCurrentStateSpace().updateDisplay(board); 
         
